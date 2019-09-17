@@ -1,13 +1,13 @@
-package com.workfort.thinkndraw
+package com.workfort.thinkndraw.util.view
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.graphics.Paint.*
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
+import com.workfort.thinkndraw.app.data.local.fingerpath.FingerPath
 import kotlin.math.abs
 
 class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
@@ -18,7 +18,8 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private val mPaint: Paint = Paint()
     private val paths = ArrayList<FingerPath>()
     private var currentColor: Int = 0
-    private var mBackgroundColor = DEFAULT_BG_COLOR
+    private var mBackgroundColor =
+        DEFAULT_BG_COLOR
     private var strokeWidth: Int = 0
     private var emboss: Boolean = false
     private var blur: Boolean = false
@@ -41,6 +42,7 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             alpha = 0xff
         }
 
+        @Suppress("DEPRECATION")
         mEmboss = EmbossMaskFilter(floatArrayOf(1f, 1f, 1f), 0.4f, 6f, 3.5f)
         mBlur = BlurMaskFilter(5f, BlurMaskFilter.Blur.NORMAL)
 
@@ -116,7 +118,14 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     private fun touchStart(x: Float, y: Float) {
         mPath = Path()
-        val fp = FingerPath(currentColor, emboss, blur, strokeWidth, mPath!!)
+        val fp =
+            FingerPath(
+                currentColor,
+                emboss,
+                blur,
+                strokeWidth,
+                mPath!!
+            )
         paths.add(fp)
 
         mPath?.reset()

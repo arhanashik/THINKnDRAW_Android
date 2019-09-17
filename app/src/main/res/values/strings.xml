@@ -6,4 +6,6 @@
     <string name="action_blur">Blur</string>
     <string name="action_clear">Clear</string>
     <string name="action_save">Save</string>
+    <string name="app_banner">Think what you need to think</string>
+    <string name="txt_draw_here">Draw Here</string>
 </resources>

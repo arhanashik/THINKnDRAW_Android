@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/fragmentQuestionTypeB">
+
+    <fragment
+        android:id="@+id/fragmentQuestionTypeB"
+        android:name="com.workfort.thinkndraw.app.ui.main.view.fragment.FragmentQuestionTypeB"
+        tools:layout="@layout/fragment_question_type_b">
+
+        <argument
+            android:name="question"
+            app:argType="com.workfort.thinkndraw.app.data.local.question.QuestionEntity"
+            app:nullable="true"/>
+
+    </fragment>
+
+</navigation>
