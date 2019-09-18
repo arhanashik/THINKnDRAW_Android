@@ -9,6 +9,7 @@ import com.workfort.thinkndraw.app.data.local.question.QuestionEntity
 class MainViewModel: ViewModel() {
 
     val mQuestionsLiveData = MutableLiveData<ArrayList<QuestionEntity>>()
+    val mCurrentQuestionLiveData = MutableLiveData<QuestionEntity>()
 
     fun loadQuestions() {
         val questions = arrayListOf (

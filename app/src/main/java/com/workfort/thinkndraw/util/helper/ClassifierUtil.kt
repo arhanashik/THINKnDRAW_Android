@@ -12,7 +12,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
-import java.util.*
 
 class ClassifierUtil @Throws(IOException::class) constructor(activity: Activity) {
 
@@ -38,7 +37,7 @@ class ClassifierUtil @Throws(IOException::class) constructor(activity: Activity)
         val endTime = SystemClock.uptimeMillis()
         val timeCost = endTime - startTime
         Log.v(
-            LOG_TAG, "classify(): result = " + Arrays.toString(mResult[0])
+            LOG_TAG, "classify(): result = " + mResult[0].contentToString()
                     + ", timeCost = " + timeCost
         )
 
@@ -78,13 +77,14 @@ class ClassifierUtil @Throws(IOException::class) constructor(activity: Activity)
     companion object {
         private val LOG_TAG = ClassifierUtil::class.java.simpleName
 
-        private const val MODEL_NAME = "thinkndraw_91.tflite"
+//        private const val MODEL_NAME = "thinkndraw_91.tflite"
+        private const val MODEL_NAME = "thinkndraw_2_class98.tflite"
 
         private const val BATCH_SIZE = 1
         const val IMG_HEIGHT = 28
         const val IMG_WIDTH = 28
         private const val NUM_CHANNEL = 1
-        private const val NUM_CLASSES = 18
+        private const val NUM_CLASSES = 2
 
         private fun convertPixel(color: Int): Float {
             return (255 - ((color shr 16 and 0xFF) * 0.299f

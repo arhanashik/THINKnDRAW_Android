@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -134,6 +135,21 @@ class MainActivity : AppCompatActivity() {
         )
         val output = "Class: ${result.number}\nProbability: ${result.probability}\nTimeCost: $timeCost"
 
+        mViewModel.mCurrentQuestionLiveData.value?.let {
+            var title = "Wrong answer"
+            var message = "You can do better"
+            if(result.number == 0) {
+                title = "Congratulations"
+                message = "Your guess is great! Keep up!"
+            }
+
+            AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Ok") { _, _ -> }
+                .create()
+                .show()
+        }
         Log.e("ClassifierUtil", output)
     }
 
