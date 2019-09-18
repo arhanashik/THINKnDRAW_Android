@@ -17,4 +17,16 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/fragmentQuestionTypeC"
+        android:name="com.workfort.thinkndraw.app.ui.main.view.fragment.FragmentQuestionTypeC"
+        tools:layout="@layout/fragment_question_type_c">
+
+        <argument
+            android:name="question"
+            app:argType="com.workfort.thinkndraw.app.data.local.question.QuestionEntity"
+            app:nullable="true"/>
+
+    </fragment>
+
 </navigation>

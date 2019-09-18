@@ -1,11 +1,15 @@
 <resources>
     <string name="app_name">THINKnDRAW</string>
+    <string name="app_banner">Think What You Need To Think</string>
+
     <string name="action_settings">Settings</string>
     <string name="action_normal">Normal</string>
     <string name="action_emboss">Emboss</string>
     <string name="action_blur">Blur</string>
     <string name="action_clear">Clear</string>
     <string name="action_save">Save</string>
-    <string name="app_banner">Think what you need to think</string>
+
     <string name="txt_draw_here">Draw Here</string>
+
+    <string name="time_cost_value">%1$d ms</string>
 </resources>

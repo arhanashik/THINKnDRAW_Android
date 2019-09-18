@@ -1,8 +1,7 @@
 package com.workfort.thinkndraw.app.ui.main.view.activity
 
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Environment
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -14,10 +13,13 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.data.local.constant.Const
+import com.workfort.thinkndraw.app.data.local.result.Result
 import com.workfort.thinkndraw.app.ui.main.view.viewmodel.MainViewModel
 import com.workfort.thinkndraw.databinding.ActivityMainBinding
-import java.io.File
-import java.io.FileOutputStream
+import com.workfort.thinkndraw.util.helper.ClassifierUtil
+import com.workfort.thinkndraw.util.helper.ImageUtil
+import java.io.IOException
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +29,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mViewModel: MainViewModel
 
+    private lateinit var mClassifier: ClassifierUtil
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,10 +39,14 @@ class MainActivity : AppCompatActivity() {
 
         mViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        mBinding.fab.setOnClickListener { mBinding.content.paintView.clear() }
+        mBinding.fab.setOnClickListener {
+            classify()
+        }
 
         mNavController = findNavController(R.id.fragment_nav_host)
 
+        initClassifier()
+        mBinding.content.fpvPaint.pen.strokeWidth = 10f
         observeData()
 
         mViewModel.loadQuestions()
@@ -65,6 +73,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_clear -> {
                 mBinding.content.paintView.clear()
+//                clearPaint()
                 true
             }
             R.id.action_save -> {
@@ -72,6 +81,15 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun initClassifier() {
+        try {
+            mClassifier = ClassifierUtil(this)
+        } catch (e: IOException) {
+            Toast.makeText(this, "Failed to create ClassifierUtil", Toast.LENGTH_SHORT).show()
+            Log.e("ClassifierUtil", "initClassifier(): Failed to create ClassifierUtil", e)
         }
     }
 
@@ -83,24 +101,43 @@ class MainActivity : AppCompatActivity() {
             args.putParcelable(Const.Params.QUESTION, it[0])
 
             mNavController.navigate(R.id.fragmentQuestionTypeB, args)
+//            mNavController.navigate(R.id.fragmentQuestionTypeC, args)
         })
     }
 
-    @Suppress("DEPRECATION")
     private fun saveDrawing() {
-        val path = Environment.getExternalStorageDirectory().absolutePath
-        val file = File("$path/THINKnDRAW.png")
-        try {
-            val outStream = FileOutputStream(file)
-            file.createNewFile()
-            val drawingBmp = mBinding.content.paintView.getBitmap()
-            drawingBmp?.compress(Bitmap.CompressFormat.JPEG, 85, outStream)
-            outStream.flush()
-            outStream.close()
-            Toast.makeText(this, "image saved", Toast.LENGTH_SHORT).show()
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            Toast.makeText(this, "error", Toast.LENGTH_SHORT).show()
+        mBinding.content.paintView.exportToBitmap().let {
+            ImageUtil.saveBitmap(it)
         }
+    }
+
+    private fun classify() {
+//        if(mBinding.content.fpvPaint.isEmpty) return
+
+//        val image = mBinding.content.fpvPaint.exportToBitmap(
+//            ClassifierUtil.IMG_WIDTH, ClassifierUtil.IMG_HEIGHT
+//        )
+        val image = mBinding.content.paintView.exportToBitmap(
+            ClassifierUtil.IMG_WIDTH, ClassifierUtil.IMG_HEIGHT
+        )
+
+//        ImageUtil.saveBitmap(image)
+
+        val result = mClassifier.classify(image)
+        renderResult(result)
+    }
+
+    private fun renderResult(result: Result) {
+        val timeCost = String.format(
+            getString(R.string.time_cost_value),
+            result.timeCost
+        )
+        val output = "Class: ${result.number}\nProbability: ${result.probability}\nTimeCost: $timeCost"
+
+        Log.e("ClassifierUtil", output)
+    }
+
+    private fun clearPaint() {
+        mBinding.content.fpvPaint.clear()
     }
 }

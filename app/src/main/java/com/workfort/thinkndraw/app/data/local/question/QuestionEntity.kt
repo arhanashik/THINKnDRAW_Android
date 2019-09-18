@@ -8,7 +8,8 @@ data class QuestionEntity (
     var question: String = "",
     var questionType: Int = 0,
     var message: String = "",
-    var options: ArrayList<String> = ArrayList()
+    var options: ArrayList<String> = ArrayList(),
+    var images: ArrayList<Int> = ArrayList()
 ): Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -16,6 +17,7 @@ data class QuestionEntity (
         parcel.readString()?: "",
         parcel.readInt(),
         parcel.readString()?: "",
+        ArrayList(),
         ArrayList()
     )
 

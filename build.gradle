@@ -39,4 +39,7 @@ ext {
 
     glide = '4.9.0'
     htextview = '0.1.6'
+    fingerPaintView = '0.1.0'
+
+    tensorflowLite = '1.13.1'
 }

@@ -15,7 +15,7 @@ class SplashActivity : AppCompatActivity() {
 
     private val mHandler = Handler()
     private val mAnimationRunnable = Runnable {
-        mTvSplash.animateText(getString(R.string.app_banner))
+        mTvSplash.animateText(getString(R.string.app_name))
 
         mTvSplash.setAnimationListener {
             mHandler.postDelayed({mNextActivityRunnable.run()}, 1000)
@@ -31,7 +31,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         mTvSplash = findViewById(R.id.tv_splash)
-        mTvSplash.animateText(getString(R.string.app_name))
+        mTvSplash.animateText(getString(R.string.app_banner))
     }
 
     override fun onResume() {

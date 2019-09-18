@@ -5,7 +5,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/tv_question"
@@ -21,9 +21,11 @@
         <ImageView
             android:id="@+id/img_1"
             android:layout_width="0dp"
-            android:layout_height="240dp"
+            android:layout_height="0dp"
             android:layout_marginEnd="5dp"
+            android:background="@drawable/bg_paint"
             tools:src="@drawable/img_war"
+            app:layout_constraintHeight_percent="0.6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_question"
             app:layout_constraintEnd_toStartOf="@+id/img_2"
@@ -32,14 +34,27 @@
         <ImageView
             android:id="@+id/img_2"
             android:layout_width="0dp"
-            android:layout_height="240dp"
+            android:layout_height="0dp"
             android:layout_marginStart="5dp"
+            android:background="@drawable/bg_paint"
             tools:src="@drawable/img_war"
             android:scaleType="center"
+            app:layout_constraintHeight_percent="0.6"
             app:layout_constraintStart_toEndOf="@+id/img_1"
             app:layout_constraintTop_toBottomOf="@+id/tv_question"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            tools:text="This message will be shown"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/img_1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

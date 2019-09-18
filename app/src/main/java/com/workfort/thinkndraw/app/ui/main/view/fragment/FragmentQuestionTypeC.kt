@@ -10,20 +10,18 @@ import com.bumptech.glide.Glide
 import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.data.local.constant.Const
 import com.workfort.thinkndraw.app.data.local.question.QuestionEntity
-import com.workfort.thinkndraw.databinding.FragmentQuestionTypeBBinding
+import com.workfort.thinkndraw.databinding.FragmentQuestionTypeCBinding
 
-class FragmentQuestionTypeB: Fragment() {
+class FragmentQuestionTypeC: Fragment() {
 
-    private lateinit var mBinding: FragmentQuestionTypeBBinding
-
-//    private val navArgs: FragmentQuestionTypeBArgs by navArgs()
+    private lateinit var mBinding: FragmentQuestionTypeCBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_question_type_b, container, false)
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_question_type_c, container, false)
 
         return mBinding.root
     }
@@ -35,16 +33,16 @@ class FragmentQuestionTypeB: Fragment() {
 
         question?.let {
             mBinding.tvQuestion.text = it.question
-            mBinding.tvMessage.text = it.message
 
             Glide.with(this)
-                .asGif()
                 .load(it.images[0])
                 .into(mBinding.img1)
 
-            Glide.with(this)
-                .load(it.images[1])
-                .into(mBinding.img2)
+            mBinding.tvOption1.text = it.options[0]
+            mBinding.tvOption2.text = it.options[1]
+            mBinding.tvOption3.text = it.options[2]
+
+            mBinding.tvMessage.text = it.message
         }
     }
 

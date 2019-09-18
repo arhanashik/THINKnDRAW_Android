@@ -31,7 +31,7 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     init {
         mPaint.apply {
-            color = DEFAULT_COLOR
+            color = BRUSH_COLOR
             style = Style.STROKE
             strokeJoin = Join.ROUND
             strokeCap = Cap.ROUND
@@ -49,7 +49,7 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         init()
     }
 
-    fun init() {
+    private fun init() {
         post {
             Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)?.apply {
                 mBitmap = this
@@ -57,7 +57,7 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             }
         }
 
-        currentColor = DEFAULT_COLOR
+        currentColor = BRUSH_COLOR
         strokeWidth = BRUSH_SIZE
     }
 
@@ -87,8 +87,24 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         invalidate()
     }
 
-    fun getBitmap(): Bitmap? {
-        return mBitmap
+    fun exportToBitmap(): Bitmap {
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val bgDrawable = background
+        if (bgDrawable != null) {
+            bgDrawable.draw(canvas)
+        } else {
+            canvas.drawColor(Color.WHITE)
+        }
+        draw(canvas)
+        return bitmap
+    }
+
+    fun exportToBitmap(width: Int, height: Int): Bitmap {
+        val rawBitmap = exportToBitmap()
+        val scaledBitmap = Bitmap.createScaledBitmap(rawBitmap, width, height, false)
+        rawBitmap.recycle()
+        return scaledBitmap
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -173,8 +189,8 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     companion object {
-        var BRUSH_SIZE = 20
-        val DEFAULT_COLOR = Color.RED
+        var BRUSH_SIZE = 15
+        val BRUSH_COLOR = Color.BLACK
         const val DEFAULT_BG_COLOR = Color.WHITE
         private const val TOUCH_TOLERANCE = 4f
     }
