@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:padding="16dp"
-        tools:context=".app.ui.main.view.activity.MainActivity">
+        tools:context=".app.ui.quiz.view.activity.QuizActivity">
 
         <fragment
             android:id="@+id/fragment_nav_host"
@@ -18,7 +18,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/paint_view"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_graph_main" />
+            app:navGraph="@navigation/nav_graph_quiz" />
 
         <TextView
             android:id="@+id/bg_paint_view"

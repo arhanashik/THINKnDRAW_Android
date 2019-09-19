@@ -74,22 +74,22 @@ class ClassifierUtil @Throws(IOException::class) constructor(activity: Activity)
         }
     }
 
+    private fun convertPixel(color: Int): Float {
+        return (255 - ((color shr 16 and 0xFF) * 0.299f
+                + (color shr 8 and 0xFF) * 0.587f
+                + (color and 0xFF) * 0.114f)) / 255.0f
+    }
+
     companion object {
         private val LOG_TAG = ClassifierUtil::class.java.simpleName
 
-//        private const val MODEL_NAME = "thinkndraw_91.tflite"
-        private const val MODEL_NAME = "thinkndraw_2_class98.tflite"
+        private const val MODEL_NAME = "thinkndraw_5_classes98V3.tflite"
 
         private const val BATCH_SIZE = 1
         const val IMG_HEIGHT = 28
         const val IMG_WIDTH = 28
         private const val NUM_CHANNEL = 1
-        private const val NUM_CLASSES = 2
-
-        private fun convertPixel(color: Int): Float {
-            return (255 - ((color shr 16 and 0xFF) * 0.299f
-                    + (color shr 8 and 0xFF) * 0.587f
-                    + (color and 0xFF) * 0.114f)) / 255.0f
-        }
+        private const val NUM_CLASSES = 5
+        const val THRESH_HOLD = 0.9 //min 90% accuracy is required to be a right prediction
     }
 }

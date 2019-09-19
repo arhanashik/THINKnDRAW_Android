@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.hanks.htextview.fall.FallTextView
 import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.ui.main.view.activity.MainActivity
+import java.lang.Exception
 
 
 class SplashActivity : AppCompatActivity() {

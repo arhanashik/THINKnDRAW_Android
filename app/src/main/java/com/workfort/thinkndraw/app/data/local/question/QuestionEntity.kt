@@ -9,7 +9,8 @@ data class QuestionEntity (
     var questionType: Int = 0,
     var message: String = "",
     var options: ArrayList<String> = ArrayList(),
-    var images: ArrayList<Int> = ArrayList()
+    var images: ArrayList<Int> = ArrayList(),
+    var answer: Pair<Int, String>? = null
 ): Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -18,7 +19,8 @@ data class QuestionEntity (
         parcel.readInt(),
         parcel.readString()?: "",
         ArrayList(),
-        ArrayList()
+        ArrayList(),
+        null
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

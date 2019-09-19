@@ -3,29 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_main"
-    app:startDestination="@id/fragmentQuestionTypeB">
+    app:startDestination="@id/fragmentHome">
 
     <fragment
-        android:id="@+id/fragmentQuestionTypeB"
-        android:name="com.workfort.thinkndraw.app.ui.main.view.fragment.FragmentQuestionTypeB"
-        tools:layout="@layout/fragment_question_type_b">
+        android:id="@+id/fragmentHome"
+        android:name="com.workfort.thinkndraw.app.ui.main.view.fragment.HomeFragment"
+        tools:layout="@layout/fragment_home">
 
-        <argument
-            android:name="question"
-            app:argType="com.workfort.thinkndraw.app.data.local.question.QuestionEntity"
-            app:nullable="true"/>
+        <action
+            android:id="@+id/fragmentHome_to_fragmentChallenge"
+            app:destination="@id/fragmentChallenge"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
     </fragment>
 
     <fragment
-        android:id="@+id/fragmentQuestionTypeC"
-        android:name="com.workfort.thinkndraw.app.ui.main.view.fragment.FragmentQuestionTypeC"
-        tools:layout="@layout/fragment_question_type_c">
+        android:id="@+id/fragmentChallenge"
+        android:name="com.workfort.thinkndraw.app.ui.main.view.fragment.ChallengeFragment"
+        tools:layout="@layout/fragment_challenge">
 
-        <argument
-            android:name="question"
-            app:argType="com.workfort.thinkndraw.app.data.local.question.QuestionEntity"
-            app:nullable="true"/>
+        <action
+            android:id="@+id/fragmentChallenge_to_fragmentHome"
+            app:destination="@id/fragmentHome"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 
     </fragment>
 

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/img_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:src="@drawable/img_draw"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_start"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@string/label_start"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@color/colorPrimaryOverlay"
+            app:cornerRadius="10dp"
+            app:layout_constraintDimensionRatio="h, 1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_multiplayer"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_multiplayer"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@string/label_multiplayer"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@color/colorPrimaryDarkOverlay"
+            app:cornerRadius="10dp"
+            app:layout_constraintDimensionRatio="h, 1:1"
+            app:layout_constraintStart_toEndOf="@+id/btn_start"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_challenge"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="5dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@string/label_challenge"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@color/colorPrimaryOverlay"
+            app:cornerRadius="10dp"
+            app:layout_constraintDimensionRatio="h, 1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_start"
+            app:layout_constraintEnd_toStartOf="@+id/btn_settings"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_settings"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@string/label_settings"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            app:strokeColor="@color/colorPrimary"
+            app:strokeWidth="2dp"
+            app:cornerRadius="10dp"
+            app:layout_constraintDimensionRatio="h, 1:1"
+            app:layout_constraintStart_toEndOf="@+id/btn_challenge"
+            app:layout_constraintTop_toBottomOf="@+id/btn_multiplayer"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.hanks.htextview.fall.FallTextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/app_name"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:gravity="center_horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

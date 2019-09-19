@@ -1,4 +1,4 @@
-package com.workfort.thinkndraw.app.ui.main.view.fragment
+package com.workfort.thinkndraw.app.ui.quiz.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,18 +7,21 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
+import androidx.navigation.fragment.navArgs
 import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.data.local.constant.Const
 import com.workfort.thinkndraw.app.data.local.question.QuestionEntity
-import com.workfort.thinkndraw.app.ui.main.view.viewmodel.MainViewModel
+import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
 import com.workfort.thinkndraw.databinding.FragmentQuestionTypeBBinding
+import com.workfort.thinkndraw.util.helper.ImageLoader
 
-class FragmentQuestionTypeB: Fragment() {
+class QuestionTypeBFragment: Fragment() {
 
     private lateinit var mBinding: FragmentQuestionTypeBBinding
 
-    private lateinit var mViewModel: MainViewModel
+//    private val args: QuestionTypeBFragmentArgs by navArgs()
+
+    private lateinit var mViewModel: QuizViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +37,7 @@ class FragmentQuestionTypeB: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         activity?.let {
-            mViewModel = ViewModelProviders.of(it).get(MainViewModel::class.java)
+            mViewModel = ViewModelProviders.of(it).get(QuizViewModel::class.java)
         }
 
         val question = arguments?.getParcelable<QuestionEntity>(Const.Params.QUESTION)
@@ -45,14 +48,8 @@ class FragmentQuestionTypeB: Fragment() {
             mBinding.tvQuestion.text = it.question
             mBinding.tvMessage.text = it.message
 
-            Glide.with(this)
-                .asGif()
-                .load(it.images[0])
-                .into(mBinding.img1)
-
-            Glide.with(this)
-                .load(it.images[1])
-                .into(mBinding.img2)
+            ImageLoader.loadGif(it.images[0], mBinding.img1)
+            ImageLoader.load(it.images[1], mBinding.img2)
         }
     }
 

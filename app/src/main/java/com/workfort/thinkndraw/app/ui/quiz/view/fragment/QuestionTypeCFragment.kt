@@ -1,4 +1,4 @@
-package com.workfort.thinkndraw.app.ui.main.view.fragment
+package com.workfort.thinkndraw.app.ui.quiz.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import com.workfort.thinkndraw.app.data.local.constant.Const
 import com.workfort.thinkndraw.app.data.local.question.QuestionEntity
 import com.workfort.thinkndraw.databinding.FragmentQuestionTypeCBinding
 
-class FragmentQuestionTypeC: Fragment() {
+class QuestionTypeCFragment: Fragment() {
 
     private lateinit var mBinding: FragmentQuestionTypeCBinding
 

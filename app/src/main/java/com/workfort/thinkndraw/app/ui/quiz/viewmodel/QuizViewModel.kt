@@ -1,4 +1,4 @@
-package com.workfort.thinkndraw.app.ui.main.view.viewmodel
+package com.workfort.thinkndraw.app.ui.quiz.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.data.local.constant.Const
 import com.workfort.thinkndraw.app.data.local.question.QuestionEntity
 
-class MainViewModel: ViewModel() {
+class QuizViewModel: ViewModel() {
 
     val mQuestionsLiveData = MutableLiveData<ArrayList<QuestionEntity>>()
     val mCurrentQuestionLiveData = MutableLiveData<QuestionEntity>()
