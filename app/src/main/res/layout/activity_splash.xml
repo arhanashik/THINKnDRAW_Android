@@ -5,6 +5,19 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
+        <ImageView
+            android:id="@+id/img_app_logo"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/img_app_logo"
+            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.3"
+            tools:ignore="ContentDescription" />
+
         <com.hanks.htextview.fall.FallTextView
             android:id="@+id/tv_splash"
             android:layout_width="match_parent"
