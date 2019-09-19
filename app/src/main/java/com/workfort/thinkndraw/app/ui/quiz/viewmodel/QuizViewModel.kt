@@ -23,12 +23,20 @@ class QuizViewModel: ViewModel() {
             ),
             QuestionEntity (
                 2,
-                "Which option matches the best with this picture?",
+                "It's coming for you. What will you do?",
                 Const.QuestionType.TYPE_C,
-                "Draw the picture of the option",
-                arrayListOf("Banana", "Alien", "Dragon"),
-                arrayListOf(R.drawable.img_got_daenerys),
-                Const.Classes.APPLE
+                "Draw your weapon before it really comes :p",
+                arrayListOf("Offer Banana", "Offer dinner", "Run away in car"),
+                arrayListOf(R.drawable.img_tiger),
+                Const.Classes.CAR
+            ),
+            QuestionEntity (
+                3,
+                "Can you imagine the missing piece?",
+                Const.QuestionType.TYPE_D,
+                "Draw the missing piece",
+                images = arrayListOf(R.drawable.img_newton, R.drawable.img_what, R.drawable.img_gravity),
+                answer = Const.Classes.APPLE
             )
         )
 

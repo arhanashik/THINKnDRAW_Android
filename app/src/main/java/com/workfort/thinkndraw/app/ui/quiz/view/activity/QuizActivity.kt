@@ -1,7 +1,9 @@
 package com.workfort.thinkndraw.app.ui.quiz.view.activity
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -17,7 +19,9 @@ import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.data.local.result.Result
 import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
 import com.workfort.thinkndraw.databinding.ActivityQuizBinding
+import com.workfort.thinkndraw.databinding.PromptResultBinding
 import com.workfort.thinkndraw.util.helper.ClassifierUtil
+import com.workfort.thinkndraw.util.helper.ImageLoader
 import com.workfort.thinkndraw.util.helper.ImageUtil
 import java.io.IOException
 
@@ -102,7 +106,7 @@ class QuizActivity : AppCompatActivity() {
 //            args.putParcelable(Const.Params.QUESTION, it[0])
 //
 //            mNavController.navigate(R.id.fragmentQuestionTypeB, args)
-            mNavController.navigate(NavigationQuizDirections.goToFragmentQuestionTypeB(it[0]))
+            mNavController.navigate(NavigationQuizDirections.goToFragmentQuestionTypeC(it[1]))
 //            mNavController.navigate(R.id.fragmentQuestionTypeC, args)
         })
     }
@@ -139,20 +143,40 @@ class QuizActivity : AppCompatActivity() {
         Log.e("ClassifierUtil", output)
 
         mQuizViewModel.mCurrentQuestionLiveData.value?.let {
-            var title = "Wrong answer"
-            var message = "You can do better"
+            var success = false
+//            var imageRes = R.drawable.img_newton_failure
+            var imageRes = R.drawable.img_tiger_failure
+//            var message = "Apple: Now are responsible for the death of Newton!"
+            var message = "Tiger: আহো ভাতিজা আহো! Come to papa!"
             if(result.number == it.answer?.first && result.probability > ClassifierUtil.THRESH_HOLD) {
-                title = "Congratulations"
-                message = "Your guess is great! Yes it's ${it.answer?.second}! Keep up!"
+                success = true
+//                imageRes = R.drawable.img_newton_success
+                imageRes = R.drawable.img_tiger_success
+                message = "Luckily your ${it.answer?.second} is fast enough! Careful next time!"
             }
 
-            AlertDialog.Builder(this)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Ok") { _, _ -> }
-                .create()
-                .show()
+            showResult(success, imageRes, message)
         }
+    }
+
+    private fun showResult(success: Boolean, imgRes: Int, message: String) {
+        val binding = DataBindingUtil.inflate<PromptResultBinding>(
+            layoutInflater, R.layout.prompt_result, null, false
+        )
+        val title = if(success) "Congratulations" else "Wrong answer"
+
+        binding.tvTitle.text = message
+        if(!success) binding.tvTitle.setTextColor(Color.RED)
+        binding.imgResult.clearAnimation()
+        ImageLoader.loadGif(imgRes, binding.imgResult)
+
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setView(binding.root)
+            .setPositiveButton("Next") { _, _ ->
+            }
+            .create()
+            .show()
     }
 
     private fun clearPaint() {

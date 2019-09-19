@@ -23,6 +23,15 @@
         app:popExitAnim="@anim/nav_default_pop_exit_anim"
         app:popUpToInclusive="true"/>
 
+    <action
+        android:id="@+id/go_to_fragmentQuestionTypeD"
+        app:destination="@id/fragmentQuestionTypeD"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpToInclusive="true"/>
+
     <fragment
         android:id="@+id/fragmentQuestionTypeB"
         android:name="com.workfort.thinkndraw.app.ui.quiz.view.fragment.QuestionTypeBFragment"
@@ -39,6 +48,18 @@
         android:id="@+id/fragmentQuestionTypeC"
         android:name="com.workfort.thinkndraw.app.ui.quiz.view.fragment.QuestionTypeCFragment"
         tools:layout="@layout/fragment_question_type_c">
+
+        <argument
+            android:name="question"
+            app:argType="com.workfort.thinkndraw.app.data.local.question.QuestionEntity"
+            app:nullable="true"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentQuestionTypeD"
+        android:name="com.workfort.thinkndraw.app.ui.quiz.view.fragment.QuestionTypeDFragment"
+        tools:layout="@layout/fragment_question_type_d">
 
         <argument
             android:name="question"

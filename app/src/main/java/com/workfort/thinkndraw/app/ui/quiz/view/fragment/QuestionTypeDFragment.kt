@@ -11,12 +11,12 @@ import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.data.local.constant.Const
 import com.workfort.thinkndraw.app.data.local.question.QuestionEntity
 import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
-import com.workfort.thinkndraw.databinding.FragmentQuestionTypeCBinding
+import com.workfort.thinkndraw.databinding.FragmentQuestionTypeDBinding
 import com.workfort.thinkndraw.util.helper.ImageLoader
 
-class QuestionTypeCFragment: Fragment() {
+class QuestionTypeDFragment: Fragment() {
 
-    private lateinit var mBinding: FragmentQuestionTypeCBinding
+    private lateinit var mBinding: FragmentQuestionTypeDBinding
 
     private lateinit var mViewModel: QuizViewModel
 
@@ -25,7 +25,7 @@ class QuestionTypeCFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_question_type_c, container, false)
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_question_type_d, container, false)
 
         return mBinding.root
     }
@@ -45,12 +45,11 @@ class QuestionTypeCFragment: Fragment() {
             mBinding.tvQuestion.text = it.question
 
             ImageLoader.load(it.images[0], mBinding.img1)
-
-            mBinding.tvOption1.text = it.options[0]
-            mBinding.tvOption2.text = it.options[1]
-            mBinding.tvOption3.text = it.options[2]
+            ImageLoader.loadGif(it.images[1], mBinding.img2)
+            ImageLoader.load(it.images[2], mBinding.img3)
 
             mBinding.tvMessage.text = it.message
         }
     }
+
 }
