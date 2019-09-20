@@ -87,6 +87,23 @@ class QuizActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+
+        if(mNavController.currentDestination?.id == R.id.fragmentHome) {
+            super.onBackPressed()
+        } else {
+            AlertDialog.Builder(this)
+                .setTitle("Stop Game")
+                .setMessage("Are you surely want to stop the game here?")
+                .setPositiveButton("Yes") { _, _ ->
+                    finish()
+                }
+                .setNegativeButton("No") { _, _ -> }
+                .create()
+                .show()
+        }
+    }
+
     private fun initClassifier() {
         try {
             mClassifier = ClassifierUtil(this)
@@ -177,13 +194,13 @@ class QuizActivity : AppCompatActivity() {
         )
         val title = if(success) "Congratulations" else "Wrong answer"
 
-        binding.tvTitle.text = message
+        binding.tvTitle.text = title
+        binding.tvSubtitle.text = message
         if(!success) binding.tvTitle.setTextColor(Color.RED)
         binding.imgResult.clearAnimation()
         ImageLoader.loadGif(imgRes, binding.imgResult)
 
         AlertDialog.Builder(this)
-            .setTitle(title)
             .setView(binding.root)
             .setPositiveButton("Next") { _, _ ->
                 if(success) {

@@ -26,7 +26,7 @@ class QuizViewModel: ViewModel() {
                 images = arrayListOf(R.drawable.img_newton, R.drawable.img_what, R.drawable.img_gravity),
                 answer = Const.Classes.APPLE,
                 successMessage = "Yes you found apple and I found the gravity! Let's post in facebook!",
-                failureMessage = "Apple: Now are responsible for the death of Newton!",
+                failureMessage = "Apple: Now you are responsible for the death of Newton!",
                 successGif = R.drawable.img_newton_success,
                 failureGif = R.drawable.img_newton_failure
             ),
@@ -53,8 +53,8 @@ class QuizViewModel: ViewModel() {
                 Const.Classes.BANANA,
                 "Thanks for the food. I love banana.",
                 "I don't need this! You are so...",
-                R.drawable.img_newton_success,
-                R.drawable.img_newton_failure
+                R.drawable.img_minion_success,
+                R.drawable.img_minion_failure
             )
         )
 

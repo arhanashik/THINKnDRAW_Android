@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.data.local.result.Result
 import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
@@ -50,7 +49,7 @@ class ChallengeFragment: Fragment() {
         mQuizViewModel.selectChallenge()
 
         mBinding.btnCheck.setOnClickListener { classify() }
-        mBinding.btnClear.setOnClickListener { mBinding.paintView.clear() }
+        mBinding.btnClear.setOnClickListener { clearPaint() }
     }
 
     private fun initClassifier() {
@@ -101,14 +100,18 @@ class ChallengeFragment: Fragment() {
                     .setTitle(title)
                     .setMessage(message)
                     .setPositiveButton("Ok") { _, _ ->
-                        findNavController().navigate(
-                            ChallengeFragmentDirections.fragmentChallengeToFragmentHome()
-                        )
+                        mQuizViewModel.selectChallenge()
+                        clearPaint()
                     }
                     .create()
                     .show()
             }
         }
+    }
+
+    private fun clearPaint() {
+        mBinding.paintView.clear()
+        mBinding.tvAnswer.text = ""
     }
 
 }

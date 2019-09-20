@@ -11,13 +11,24 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            tools:text="What is the title?"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:padding="16dp"
             tools:text="What is the result?"
             android:textColor="@android:color/black"
             android:textSize="22sp"
             android:textStyle="bold"
             android:gravity="center"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
         <ImageView
             android:id="@+id/img_result"
@@ -28,7 +39,7 @@
             tools:src="@drawable/img_newton"
             app:layout_constraintHeight_percent="0.6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_subtitle"
             tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
