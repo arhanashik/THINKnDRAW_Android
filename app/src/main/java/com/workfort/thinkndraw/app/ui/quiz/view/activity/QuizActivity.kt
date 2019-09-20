@@ -23,6 +23,7 @@ import com.workfort.thinkndraw.databinding.PromptResultBinding
 import com.workfort.thinkndraw.util.helper.ClassifierUtil
 import com.workfort.thinkndraw.util.helper.ImageLoader
 import com.workfort.thinkndraw.util.helper.ImageUtil
+import com.workfort.thinkndraw.util.helper.MediaPlayerUtil
 import java.io.IOException
 
 
@@ -210,6 +211,10 @@ class QuizActivity : AppCompatActivity() {
             }
             .create()
             .show()
+
+        MediaPlayerUtil.play(
+            this, if(success) R.raw.sound_success else R.raw.sound_failed
+        )
     }
 
     private fun clearPaint() {

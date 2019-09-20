@@ -16,6 +16,7 @@ import com.workfort.thinkndraw.app.data.local.result.Result
 import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
 import com.workfort.thinkndraw.databinding.FragmentChallengeBinding
 import com.workfort.thinkndraw.util.helper.ClassifierUtil
+import com.workfort.thinkndraw.util.helper.MediaPlayerUtil
 import java.io.IOException
 
 class ChallengeFragment: Fragment() {
@@ -93,6 +94,7 @@ class ChallengeFragment: Fragment() {
 
         mQuizViewModel.mCurrentChallengeLiveData.value?.let {
             if(result.number == it.first && result.probability >= 0.9) {
+                MediaPlayerUtil.play(context!!, R.raw.sound_success)
                 var title = "Congratulations"
                 var message = "Your drawing is great! Keep up!"
 
@@ -105,6 +107,8 @@ class ChallengeFragment: Fragment() {
                     }
                     .create()
                     .show()
+            } else {
+                MediaPlayerUtil.play(context!!, R.raw.sound_failed)
             }
         }
     }
