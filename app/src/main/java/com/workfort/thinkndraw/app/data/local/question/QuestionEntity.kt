@@ -10,7 +10,11 @@ data class QuestionEntity (
     var message: String = "",
     var options: ArrayList<String> = ArrayList(),
     var images: ArrayList<Int> = ArrayList(),
-    var answer: Pair<Int, String>? = null
+    var answer: Pair<Int, String>? = null,
+    var successMessage: String = "",
+    var failureMessage: String = "",
+    var successGif: Int = 0,
+    var failureGif: Int = 0
 ): Parcelable {
 
     constructor(parcel: Parcel) : this(

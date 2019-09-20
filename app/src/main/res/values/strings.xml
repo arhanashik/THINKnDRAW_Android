@@ -19,4 +19,5 @@
     <string name="label_challenge">Challenge</string>
     <string name="label_check">Check</string>
     <string name="label_clear">Clear</string>
+    <string name="txt_starts_in">Starts In</string>
 </resources>

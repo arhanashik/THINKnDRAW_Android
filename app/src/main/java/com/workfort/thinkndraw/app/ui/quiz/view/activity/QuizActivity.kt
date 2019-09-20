@@ -3,7 +3,6 @@ package com.workfort.thinkndraw.app.ui.quiz.view.activity
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -16,6 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.workfort.thinkndraw.NavigationQuizDirections
 import com.workfort.thinkndraw.R
+import com.workfort.thinkndraw.app.data.local.constant.Const
 import com.workfort.thinkndraw.app.data.local.result.Result
 import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
 import com.workfort.thinkndraw.databinding.ActivityQuizBinding
@@ -44,10 +44,6 @@ class QuizActivity : AppCompatActivity() {
 
         mQuizViewModel = ViewModelProviders.of(this).get(QuizViewModel::class.java)
 
-        mBinding.fab.setOnClickListener {
-            classify()
-        }
-
         mNavController = findNavController(R.id.fragment_nav_host)
 
         initClassifier()
@@ -55,6 +51,9 @@ class QuizActivity : AppCompatActivity() {
         observeData()
 
         mQuizViewModel.loadQuestions()
+
+        mBinding.content.btnCheck.setOnClickListener { classify() }
+        mBinding.content.btnClear.setOnClickListener { clearPaint() }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -77,8 +76,7 @@ class QuizActivity : AppCompatActivity() {
                 true
             }
             R.id.action_clear -> {
-                mBinding.content.paintView.clear()
-//                clearPaint()
+                clearPaint()
                 true
             }
             R.id.action_save -> {
@@ -106,8 +104,26 @@ class QuizActivity : AppCompatActivity() {
 //            args.putParcelable(Const.Params.QUESTION, it[0])
 //
 //            mNavController.navigate(R.id.fragmentQuestionTypeB, args)
-            mNavController.navigate(NavigationQuizDirections.goToFragmentQuestionTypeC(it[1]))
+//            mNavController.navigate(NavigationQuizDirections.goToFragmentQuestionTypeD(it[2]))
 //            mNavController.navigate(R.id.fragmentQuestionTypeC, args)
+        })
+
+        mQuizViewModel.mCurrentQuestionLiveData.observe(this, Observer {
+            if(it == null) return@Observer
+
+            val dest = when(it.questionType) {
+                Const.QuestionType.TYPE_B -> NavigationQuizDirections.goToFragmentQuestionTypeB(it)
+                Const.QuestionType.TYPE_C -> NavigationQuizDirections.goToFragmentQuestionTypeC(it)
+                Const.QuestionType.TYPE_D -> NavigationQuizDirections.goToFragmentQuestionTypeD(it)
+                else -> null
+            }
+            dest?.let { mNavController.navigate(dest) }
+        })
+
+        mQuizViewModel.mFinishQuizLiveData.observe(this, Observer {
+            if(it == null) return@Observer
+
+            if(it) finish()
         })
     }
 
@@ -135,8 +151,7 @@ class QuizActivity : AppCompatActivity() {
 
     private fun renderResult(result: Result) {
         val timeCost = String.format(
-            getString(R.string.time_cost_value),
-            result.timeCost
+            getString(R.string.time_cost_value), result.timeCost
         )
         val className = result.className()
         val output = "Class: $className\nProbability: ${result.probability}\nList: ${result.probabilityArr.contentToString()}\nTimeCost: $timeCost"
@@ -144,15 +159,12 @@ class QuizActivity : AppCompatActivity() {
 
         mQuizViewModel.mCurrentQuestionLiveData.value?.let {
             var success = false
-//            var imageRes = R.drawable.img_newton_failure
-            var imageRes = R.drawable.img_tiger_failure
-//            var message = "Apple: Now are responsible for the death of Newton!"
-            var message = "Tiger: আহো ভাতিজা আহো! Come to papa!"
+            var imageRes = it.failureGif
+            var message = it.failureMessage
             if(result.number == it.answer?.first && result.probability > ClassifierUtil.THRESH_HOLD) {
                 success = true
-//                imageRes = R.drawable.img_newton_success
-                imageRes = R.drawable.img_tiger_success
-                message = "Luckily your ${it.answer?.second} is fast enough! Careful next time!"
+                imageRes = it.successGif
+                message = it.successMessage
             }
 
             showResult(success, imageRes, message)
@@ -174,12 +186,17 @@ class QuizActivity : AppCompatActivity() {
             .setTitle(title)
             .setView(binding.root)
             .setPositiveButton("Next") { _, _ ->
+                if(success) {
+                    mQuizViewModel.startQuiz(mQuizViewModel.mCurrentStep + 1)
+                    clearPaint()
+                }
             }
             .create()
             .show()
     }
 
     private fun clearPaint() {
-        mBinding.content.fpvPaint.clear()
+//        mBinding.content.fpvPaint.clear()
+        mBinding.content.paintView.clear()
     }
 }

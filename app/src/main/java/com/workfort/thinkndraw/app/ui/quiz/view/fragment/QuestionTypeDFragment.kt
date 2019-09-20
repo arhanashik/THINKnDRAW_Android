@@ -40,8 +40,6 @@ class QuestionTypeDFragment: Fragment() {
         val question = arguments?.getParcelable<QuestionEntity>(Const.Params.QUESTION)
 
         question?.let {
-            mViewModel.mCurrentQuestionLiveData.postValue(it)
-
             mBinding.tvQuestion.text = it.question
 
             ImageLoader.load(it.images[0], mBinding.img1)

@@ -1,6 +1,7 @@
 package com.workfort.thinkndraw.app.ui.quiz.view.fragment
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,15 +9,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.workfort.thinkndraw.R
-import com.workfort.thinkndraw.app.data.local.constant.Const
-import com.workfort.thinkndraw.app.data.local.question.QuestionEntity
 import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
-import com.workfort.thinkndraw.databinding.FragmentQuestionTypeBBinding
-import com.workfort.thinkndraw.util.helper.ImageLoader
+import com.workfort.thinkndraw.databinding.FragmentStartQuizBinding
 
-class QuestionTypeBFragment: Fragment() {
+class StartQuizFragment: Fragment() {
 
-    private lateinit var mBinding: FragmentQuestionTypeBBinding
+    private lateinit var mBinding: FragmentStartQuizBinding
 
 //    private val args: QuestionTypeBFragmentArgs by navArgs()
 
@@ -27,7 +25,7 @@ class QuestionTypeBFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_question_type_b, container, false)
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_start_quiz, container, false)
 
         return mBinding.root
     }
@@ -39,15 +37,20 @@ class QuestionTypeBFragment: Fragment() {
             mQuizViewModel = ViewModelProviders.of(it).get(QuizViewModel::class.java)
         }
 
-        val question = arguments?.getParcelable<QuestionEntity>(Const.Params.QUESTION)
+        mBinding.tvCount.text = "3"
+        val timer = object: CountDownTimer(4000, 1000) {
 
-        question?.let {
-            mBinding.tvQuestion.text = it.question
-            mBinding.tvMessage.text = it.message
+            override fun onTick(millisUntilFinished: Long) {
+                val untilStr = (millisUntilFinished / 1000).toString()
+                mBinding.tvCount.text = untilStr
+            }
 
-            ImageLoader.loadGif(it.images[0], mBinding.img1)
-            ImageLoader.load(it.images[1], mBinding.img2)
+            override fun onFinish() {
+                mQuizViewModel.startQuiz()
+            }
         }
+
+        timer.start()
     }
 
 }

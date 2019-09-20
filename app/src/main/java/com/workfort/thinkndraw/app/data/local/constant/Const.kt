@@ -14,7 +14,6 @@ object Const {
 
     object Classes {
         val ICE_CREAM = Pair(0, "Ice-Cream")
-//        val CAT = Pair(1, "CAT")
         val SQUARE = Pair(1, "Square")
         val APPLE = Pair(2, "Apple")
         val CAR = Pair(3, "Car")

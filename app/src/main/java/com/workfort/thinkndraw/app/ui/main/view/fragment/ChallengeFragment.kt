@@ -9,9 +9,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.data.local.result.Result
+import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
 import com.workfort.thinkndraw.databinding.FragmentChallengeBinding
 import com.workfort.thinkndraw.util.helper.ClassifierUtil
 import java.io.IOException
@@ -19,6 +22,8 @@ import java.io.IOException
 class ChallengeFragment: Fragment() {
 
     private lateinit var mBinding: FragmentChallengeBinding
+
+    private lateinit var mQuizViewModel: QuizViewModel
 
     private lateinit var mClassifier: ClassifierUtil
 
@@ -35,10 +40,14 @@ class ChallengeFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val question = "Draw a car with 90% accuracy"
-        mBinding.tvQuestion.setText(question)
+        activity?.let {
+            mQuizViewModel = ViewModelProviders.of(it).get(QuizViewModel::class.java)
+        }
 
         initClassifier()
+        observeData()
+
+        mQuizViewModel.selectChallenge()
 
         mBinding.btnCheck.setOnClickListener { classify() }
         mBinding.btnClear.setOnClickListener { mBinding.paintView.clear() }
@@ -51,6 +60,15 @@ class ChallengeFragment: Fragment() {
             Toast.makeText(context, "Failed to create ClassifierUtil", Toast.LENGTH_SHORT).show()
             Log.e("ClassifierUtil", "initClassifier(): Failed to create ClassifierUtil", e)
         }
+    }
+
+    private fun observeData() {
+        mQuizViewModel.mCurrentChallengeLiveData.observe(viewLifecycleOwner, Observer {
+            if(it == null) return@Observer
+
+            val question = "Draw ${it.second} with 90% accuracy"
+            mBinding.tvQuestion.text = question
+        })
     }
 
     private fun classify() {
@@ -74,20 +92,22 @@ class ChallengeFragment: Fragment() {
         val resultTxt = "It's $className with ${result.probability}% accuracy"
         mBinding.tvAnswer.text = resultTxt
 
-        if(result.probability >= 0.9) {
-            var title = "Congratulations"
-            var message = "Your drawing is great! Keep up!"
+        mQuizViewModel.mCurrentChallengeLiveData.value?.let {
+            if(result.number == it.first && result.probability >= 0.9) {
+                var title = "Congratulations"
+                var message = "Your drawing is great! Keep up!"
 
-            AlertDialog.Builder(context!!)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Ok") { _, _ ->
-                    findNavController().navigate(
-                        ChallengeFragmentDirections.fragmentChallengeToFragmentHome()
-                    )
-                }
-                .create()
-                .show()
+                AlertDialog.Builder(context!!)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton("Ok") { _, _ ->
+                        findNavController().navigate(
+                            ChallengeFragmentDirections.fragmentChallengeToFragmentHome()
+                        )
+                    }
+                    .create()
+                    .show()
+            }
         }
     }
 

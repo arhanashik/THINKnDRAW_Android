@@ -3,7 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_quiz"
-    app:startDestination="@id/fragmentQuestionTypeB">
+    app:startDestination="@id/fragmentStartQuiz">
+
+    <action
+        android:id="@+id/go_to_fragmentStartQuiz"
+        app:destination="@id/fragmentStartQuiz"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpToInclusive="true"/>
 
     <action
         android:id="@+id/go_to_fragmentQuestionTypeB"
@@ -31,6 +40,11 @@
         app:popEnterAnim="@anim/nav_default_pop_enter_anim"
         app:popExitAnim="@anim/nav_default_pop_exit_anim"
         app:popUpToInclusive="true"/>
+
+    <fragment
+        android:id="@+id/fragmentStartQuiz"
+        android:name="com.workfort.thinkndraw.app.ui.quiz.view.fragment.StartQuizFragment"
+        tools:layout="@layout/fragment_start_quiz"/>
 
     <fragment
         android:id="@+id/fragmentQuestionTypeB"
