@@ -20,6 +20,14 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph_quiz" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_canvas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:constraint_referenced_ids="bg_paint_view,paint_view,btn_check,btn_clear"/>
+
         <TextView
             android:id="@+id/bg_paint_view"
             android:layout_width="0dp"

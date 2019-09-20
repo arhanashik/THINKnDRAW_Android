@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -135,7 +136,11 @@ class QuizActivity : AppCompatActivity() {
                 Const.QuestionType.TYPE_D -> NavigationQuizDirections.goToFragmentQuestionTypeD(it)
                 else -> null
             }
-            dest?.let { mNavController.navigate(dest) }
+            dest?.let {
+                mNavController.navigate(dest)
+                mBinding.content.groupCanvas.visibility = View.VISIBLE
+                mBinding.content.paintView.init()
+            }
         })
 
         mQuizViewModel.mFinishQuizLiveData.observe(this, Observer {

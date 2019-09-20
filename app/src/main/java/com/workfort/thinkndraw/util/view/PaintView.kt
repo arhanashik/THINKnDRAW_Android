@@ -49,12 +49,17 @@ class PaintView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         init()
     }
 
-    private fun init() {
+    fun init() {
         post {
-            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)?.apply {
-                mBitmap = this
-                mCanvas = Canvas(this)
+            try {
+                Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)?.apply {
+                    mBitmap = this
+                    mCanvas = Canvas(this)
+                }
+            } catch (ex: Exception) {
+                ex.printStackTrace()
             }
+
         }
 
         currentColor = BRUSH_COLOR
