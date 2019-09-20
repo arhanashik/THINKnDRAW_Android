@@ -20,4 +20,6 @@
     <string name="label_check">Check</string>
     <string name="label_clear">Clear</string>
     <string name="txt_starts_in">Starts In</string>
+    <string name="hint_enter_name">Your name</string>
+    <string name="txt_next">Next</string>
 </resources>

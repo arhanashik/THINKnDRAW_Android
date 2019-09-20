@@ -11,8 +11,31 @@
         tools:layout="@layout/fragment_home">
 
         <action
+            android:id="@+id/fragmentHome_to_fragmentMultiplayer"
+            app:destination="@id/fragmentMultiplayer"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+        <action
             android:id="@+id/fragmentHome_to_fragmentChallenge"
             app:destination="@id/fragmentChallenge"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentMultiplayer"
+        android:name="com.workfort.thinkndraw.app.ui.main.view.fragment.MultiplayerFragment"
+        tools:layout="@layout/fragment_multiplayer">
+
+        <action
+            android:id="@+id/fragmentMultiplayer_to_fragmentHome"
+            app:destination="@id/fragmentHome"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
