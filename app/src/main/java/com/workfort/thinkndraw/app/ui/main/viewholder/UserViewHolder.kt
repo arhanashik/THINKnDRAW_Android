@@ -27,7 +27,7 @@ class UserViewHolder (
             onlineStatus = context.getString(R.string.txt_online)
             onlineStatusColor = ContextCompat.getColor(context, R.color.colorPrimary)
 
-            binding.btnOffline.visibility = View.INVISIBLE
+            binding.btnInvite.visibility = View.INVISIBLE
             binding.btnPlay.visibility = View.VISIBLE
         } else {
             onlineStatus = if(lastSeen == 0L) ""
@@ -39,13 +39,17 @@ class UserViewHolder (
             onlineStatusColor = Color.DKGRAY
 
             binding.btnPlay.visibility = View.INVISIBLE
-            binding.btnOffline.visibility = View.VISIBLE
+            binding.btnInvite.visibility = View.VISIBLE
         }
 
         binding.tvOnlineStatus.text = onlineStatus
         binding.tvOnlineStatus.setTextColor(onlineStatusColor)
 
         binding.btnPlay.setOnClickListener {
+            callback?.onSelect(userId, user)
+        }
+
+        binding.btnInvite.setOnClickListener {
             callback?.onSelect(userId, user)
         }
     }

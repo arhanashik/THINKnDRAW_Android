@@ -1,35 +1,38 @@
 package com.workfort.thinkndraw.app.ui.main.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.workfort.thinkndraw.R
-import com.workfort.thinkndraw.app.data.local.result.Result
+import com.workfort.thinkndraw.app.data.local.pref.PrefProp
+import com.workfort.thinkndraw.app.data.local.pref.PrefUtil
 import com.workfort.thinkndraw.app.data.local.user.UserEntity
 import com.workfort.thinkndraw.app.ui.main.adapter.UserAdapter
 import com.workfort.thinkndraw.app.ui.main.callback.SelectPlayerCallback
-import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
+import com.workfort.thinkndraw.app.ui.main.view.viewmodel.MultiplayerViewModel
 import com.workfort.thinkndraw.databinding.FragmentMultiplayerBinding
 import com.workfort.thinkndraw.databinding.PromptUsersBinding
 import com.workfort.thinkndraw.util.helper.ClassifierUtil
-import com.workfort.thinkndraw.util.helper.FirebaseDbUtil
-import com.workfort.thinkndraw.util.helper.MediaPlayerUtil
+import com.workfort.thinkndraw.util.helper.Toaster
+import com.workfort.thinkndraw.util.lib.firebase.callback.LastOnlineCallback
+import com.workfort.thinkndraw.util.lib.firebase.callback.OnlineUsersCallback
+import com.workfort.thinkndraw.util.lib.firebase.callback.UsersCallback
+import com.workfort.thinkndraw.util.lib.firebase.util.FirebaseDbUtil
+import timber.log.Timber
 import java.io.IOException
 
 class MultiplayerFragment: Fragment() {
 
     private lateinit var mBinding: FragmentMultiplayerBinding
 
-    private lateinit var mQuizViewModel: QuizViewModel
+    private lateinit var mMultiplayerViewModel: MultiplayerViewModel
 
     private lateinit var mUserAdapter: UserAdapter
 
@@ -49,20 +52,18 @@ class MultiplayerFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         FirebaseDbUtil.observeMyConnectivity()
+        FirebaseDbUtil.updateFcmToken()
 
         activity?.let {
-            mQuizViewModel = ViewModelProviders.of(it).get(QuizViewModel::class.java)
+            mMultiplayerViewModel = ViewModelProviders.of(it).get(MultiplayerViewModel::class.java)
         }
 
         initClassifier()
+        initUsers()
+
         observeData()
 
-        initUsers()
         loadUsers()
-
-//        FirebaseDbUtil.getOnlineUsers()
-
-        mQuizViewModel.selectChallenge()
 
         mBinding.btnCheck.setOnClickListener { classify() }
         mBinding.btnClear.setOnClickListener { clearPaint() }
@@ -73,16 +74,36 @@ class MultiplayerFragment: Fragment() {
             mClassifier = ClassifierUtil(activity!!)
         } catch (e: IOException) {
             Toast.makeText(context, "Failed to create ClassifierUtil", Toast.LENGTH_SHORT).show()
-            Log.e("ClassifierUtil", "initClassifier(): Failed to create ClassifierUtil", e)
+            Timber.e(e)
         }
     }
 
     private fun observeData() {
-        mQuizViewModel.mCurrentChallengeLiveData.observe(viewLifecycleOwner, Observer {
+        mMultiplayerViewModel.mCurrentPlayerLiveData.observe(viewLifecycleOwner, Observer {
             if(it == null) return@Observer
 
+//            Timber.e("Multiplayer ${it.first} : ${it.second.name}")
+            mMultiplayerViewModel.observeChallenge()
+        })
+
+        mMultiplayerViewModel.mCurrentChallengeLiveData.observe(viewLifecycleOwner, Observer {
+            if(it == null) {
+                mBinding.groupCounter.visibility = View.VISIBLE
+                mBinding.groupCanvas.visibility = View.INVISIBLE
+                return@Observer
+            }
+
+            Timber.e("Multiplayer challenge ${it.first} : ${it.second}")
+            mBinding.groupCounter.visibility = View.INVISIBLE
+            mBinding.groupCanvas.visibility = View.VISIBLE
             val question = "Draw ${it.second} with 90% accuracy"
             mBinding.tvQuestion.text = question
+        })
+
+        mMultiplayerViewModel.mResultsLiveData.observe(viewLifecycleOwner, Observer {
+            if(it == null) return@Observer
+
+            renderResult()
         })
     }
 
@@ -91,7 +112,11 @@ class MultiplayerFragment: Fragment() {
         mUserAdapter = UserAdapter()
         mUserAdapter.setCallback(object: SelectPlayerCallback {
             override fun onSelect(userId: String, user: UserEntity) {
-                Toast.makeText(context!!, "Play with ${user.name}", Toast.LENGTH_SHORT).show()
+                val player = Pair(userId, user)
+                mMultiplayerViewModel.mCurrentPlayerLiveData.postValue(player)
+                mMultiplayerViewModel.selectChallenge()
+                mMultiplayerViewModel.inviteToChallenge(user)
+                Toaster.showToast("Invitation sent to ${user.name}")
             }
         })
 
@@ -107,19 +132,19 @@ class MultiplayerFragment: Fragment() {
     }
 
     private fun loadUsers() {
-        FirebaseDbUtil.getUsers(object: FirebaseDbUtil.UsersCallback {
+        FirebaseDbUtil.getUsers(object: UsersCallback {
             override fun onResponse(users: HashMap<String, UserEntity?>) {
                 mUserAdapter.setUsers(users)
             }
         })
 
-        FirebaseDbUtil.getOnlineUsers(object: FirebaseDbUtil.OnlineUsersCallback {
+        FirebaseDbUtil.getOnlineUsers(object: OnlineUsersCallback {
             override fun onResponse(userIds: ArrayList<String>) {
                 mUserAdapter.setOnlineStatus(userIds)
             }
         })
 
-        FirebaseDbUtil.getLastOnline(object: FirebaseDbUtil.LastOnlineCallback {
+        FirebaseDbUtil.getLastOnline(object: LastOnlineCallback {
             override fun onResponse(lastOnlineList: HashMap<String, Long>) {
                 mUserAdapter.setLastSeen(lastOnlineList)
             }
@@ -132,38 +157,29 @@ class MultiplayerFragment: Fragment() {
         )
 
         val result = mClassifier.classify(image)
-        renderResult(result)
+        mMultiplayerViewModel.saveChallengeResult(result)
+        mBinding.groupCounter.visibility = View.INVISIBLE
+        mBinding.groupCanvas.visibility = View.INVISIBLE
+        mBinding.layoutMultiplayerResult.containerResult.visibility = View.VISIBLE
     }
 
-    private fun renderResult(result: Result) {
-        val timeCost = String.format(
-            getString(R.string.time_cost_value),
-            result.timeCost
-        )
-        val className = result.className()
-        val output = "Class: $className\nProbability: ${result.probability}\nList: ${result.probabilityArr.contentToString()}\nTimeCost: $timeCost"
-        Log.e("ClassifierUtil", output)
-
-        val resultTxt = "It's $className with ${result.probability}% accuracy"
-        mBinding.tvAnswer.text = resultTxt
-
-        mQuizViewModel.mCurrentChallengeLiveData.value?.let {
-            if(result.number == it.first && result.probability >= 0.9) {
-                MediaPlayerUtil.play(context!!, R.raw.sound_success)
-                val title = "Congratulations"
-                val message = "Your drawing is great! Keep up!"
-
-                AlertDialog.Builder(context!!)
-                    .setTitle(title)
-                    .setMessage(message)
-                    .setPositiveButton("Ok") { _, _ ->
-                        mQuizViewModel.selectChallenge()
-                        clearPaint()
-                    }
-                    .create()
-                    .show()
-            } else {
-                MediaPlayerUtil.play(context!!, R.raw.sound_failed)
+    private fun renderResult() {
+        val opponent = mMultiplayerViewModel.mCurrentPlayerLiveData.value?: return
+        mMultiplayerViewModel.mResultsLiveData.value?.let { results ->
+            results.forEach {
+                val resultView = mBinding.layoutMultiplayerResult
+                if(it.key == opponent.first) {
+                    resultView.pbPlayer2.visibility = View.GONE
+                    resultView.tvPlayer2Name.text = opponent.second.name
+                    resultView.tvPlayer2Class.text = it.value?.className
+                    resultView.tvPlayer2Accuracy.text = it.value?.accuracy.toString()
+                } else {
+                    resultView.pbPlayer1.visibility = View.GONE
+                    val name = PrefUtil.get(PrefProp.USER_NAME, "") + "(me)"
+                    resultView.tvPlayer1Name.text = name
+                    resultView.tvPlayer1Class.text = it.value?.className
+                    resultView.tvPlayer1Accuracy.text = it.value?.accuracy.toString()
+                }
             }
         }
     }

@@ -130,6 +130,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
+        <include
+            android:id="@+id/layout_multiplayer_result"
+            layout="@layout/layout_multiplayer_result"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

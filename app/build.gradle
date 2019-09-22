@@ -70,6 +70,7 @@ dependencies {
 dependencies {
     implementation "com.google.android.material:material:$material"
 
+    implementation "com.google.firebase:firebase-messaging:$firebaseMessaging"
     implementation "com.google.firebase:firebase-database:$firebaseDatabase"
 }
 
@@ -79,12 +80,23 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide"
     kapt "com.github.bumptech.glide:compiler:$glide"
 
+    //rx
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxandroid"
+
+    //retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit"
+
     //text animation
     implementation "com.hanks:htextview-base:$htextview"
     implementation "com.hanks:htextview-fall:$htextview"
 
     //paint view
     implementation "com.nex3z:finger-paint-view:$fingerPaintView"
+
+    implementation "com.jakewharton.timber:timber:$timber"
 
     //tensor flow
     implementation "org.tensorflow:tensorflow-lite:$tensorflowLite"

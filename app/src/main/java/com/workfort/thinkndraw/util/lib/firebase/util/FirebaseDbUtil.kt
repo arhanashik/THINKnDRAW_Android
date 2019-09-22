@@ -1,20 +1,21 @@
-package com.workfort.thinkndraw.util.helper
+package com.workfort.thinkndraw.util.lib.firebase.util
 
-import android.util.Log
 import com.google.firebase.database.*
 import com.workfort.thinkndraw.app.data.local.pref.PrefProp
 import com.workfort.thinkndraw.app.data.local.pref.PrefUtil
+import com.workfort.thinkndraw.app.data.local.result.MultiplayerResult
 import com.workfort.thinkndraw.app.data.local.user.UserEntity
+import com.workfort.thinkndraw.util.lib.firebase.callback.*
+import timber.log.Timber
 
 object FirebaseDbUtil {
-    private const val TAG = "FirebaseDbUtil"
 
     private val mDatabase by lazy {
         FirebaseDatabase.getInstance().reference
     }
 
     fun observeMyConnectivity() {
-        val userId = PrefUtil.get<Int>(PrefProp.USER_ID, null)?: return
+        val userId = PrefUtil.get<String>(PrefProp.USER_ID, null)?: return
 
         val database = FirebaseDatabase.getInstance()
         val myConnectionsRef = database.getReference("online_users/$userId")
@@ -26,7 +27,7 @@ object FirebaseDbUtil {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val connected = snapshot.getValue(Boolean::class.java) ?: false
                 if (connected) {
-                    Log.d(TAG, "I am connected")
+                    Timber.d("I am connected")
                     val con = myConnectionsRef.push()
 
                     // When this device disconnects, remove it
@@ -39,24 +40,26 @@ object FirebaseDbUtil {
                     con.setValue(java.lang.Boolean.TRUE)
 
                 } else {
-                    Log.d(TAG, "I am not connected")
+                    Timber.d("I am not connected")
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG, "Listener was cancelled")
+                Timber.d( "Listener was cancelled")
             }
         })
     }
 
-    fun addUser(id: Int, user: UserEntity, callback: AddUserCallback) {
-        mDatabase.child("users").child(id.toString()).setValue(user)
+    fun addUser(id: String, user: UserEntity, callback: AddUserCallback) {
+        val fcmToken = PrefUtil.get(PrefProp.LAST_KNOWN_FCM_TOKEN, "")
+        user.fcmToken = fcmToken
+        mDatabase.child("users").child(id).setValue(user)
             .addOnSuccessListener { callback.onComplete(true) }
             .addOnFailureListener { callback.onComplete(false) }
     }
 
     fun getUsers(callback: UsersCallback) {
-        val myUserId = PrefUtil.get<Int>(PrefProp.USER_ID, null)
+        val myUserId = PrefUtil.get<String>(PrefProp.USER_ID, null)
 
         val onlineUsersDb = mDatabase.child("users").ref
 
@@ -79,7 +82,7 @@ object FirebaseDbUtil {
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                Timber.e(databaseError.toException())
                 callback.onResponse(users)
             }
         }
@@ -109,7 +112,7 @@ object FirebaseDbUtil {
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                Timber.e(databaseError.toException())
                 callback.onResponse(onlineUsers)
             }
         }
@@ -137,7 +140,7 @@ object FirebaseDbUtil {
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                Timber.e( databaseError.toException())
                 callback.onResponse(lastOnlineList)
             }
         }
@@ -145,19 +148,62 @@ object FirebaseDbUtil {
         onlineUsersDb.addValueEventListener(connectionStatusListener)
     }
 
-    interface AddUserCallback {
-        fun onComplete(success: Boolean)
+    fun updateFcmToken() {
+        val userId = PrefUtil.get<String>(PrefProp.USER_ID, null)?: return
+        val fcmToken = PrefUtil.get(PrefProp.LAST_KNOWN_FCM_TOKEN, "")
+
+        mDatabase.child("users").child(userId).child("fcmToken")
+            .setValue(fcmToken)
+            .addOnSuccessListener { Timber.d("$it") }
+            .addOnFailureListener { Timber.e("$it") }
     }
 
-    interface UsersCallback {
-        fun onResponse(users: HashMap<String, UserEntity?>)
+    fun observeMatch(
+        opponentId: String,
+        myBoard: Boolean,
+        callback: BoardStatusCallback
+    ) {
+        val userId = PrefUtil.get<String>(PrefProp.USER_ID, null)?: return
+        val board = if(myBoard) "${userId}vs$opponentId" else "${opponentId}vs$userId"
+        val boardDb = mDatabase.child("matches").child(board).ref
+        boardDb.removeValue()
+
+        val boardStatus = HashMap<String, MultiplayerResult?>()
+        val boardListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshots: DataSnapshot) {
+//                Log.e(TAG, "Count: " + dataSnapshots.childrenCount.toString())
+
+                for (dataSnapshot in dataSnapshots.children) {
+//                    Timber.e(dataSnapshot.toString())
+                    val payerId = dataSnapshot.key?: "UNKNOWN"
+//                    if(userId == myUserId.toString()) continue
+
+                    val playerResult = dataSnapshot.getValue(MultiplayerResult::class.java)
+                    boardStatus[payerId] = playerResult
+                }
+
+                callback.onResponse(boardStatus)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Timber.e(databaseError.toException())
+                callback.onResponse(boardStatus)
+            }
+        }
+
+        boardDb.addValueEventListener(boardListener)
     }
 
-    interface OnlineUsersCallback {
-        fun onResponse(userIds: ArrayList<String>)
-    }
-
-    interface LastOnlineCallback {
-        fun onResponse(lastOnlineList: HashMap<String, Long>)
+    fun saveMatchResult(
+        opponentId: String,
+        result: MultiplayerResult,
+        myBoard: Boolean,
+        callback: SaveResultCallback
+    ) {
+        val userId = PrefUtil.get<String>(PrefProp.USER_ID, null)?: return
+        val board = if(myBoard) "${userId}vs$opponentId" else "${opponentId}vs$userId"
+        mDatabase.child("matches").child(board).child(userId).setValue(result)
+            .addOnSuccessListener { callback.onComplete(true) }
+            .addOnFailureListener { callback.onComplete(false) }
     }
 }
