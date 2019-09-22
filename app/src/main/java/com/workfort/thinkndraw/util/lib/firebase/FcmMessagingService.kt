@@ -1,6 +1,7 @@
 package com.workfort.thinkndraw.util.lib.firebase
 
-import android.text.TextUtils
+import android.content.Intent
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.workfort.thinkndraw.app.data.local.constant.Const
@@ -32,20 +33,23 @@ class FcmMessagingService: FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
         Timber.e("From: ${remoteMessage.from}")
 
-        remoteMessage.data.let {
-            Timber.e("Message data payload: $it")
-
-            val dataType = it[Const.FcmMessaging.DataKey.TYPE]
-            if(dataType == Const.FcmMessaging.DataType.MESSAGE) {
-                val msgId = it[Const.FcmMessaging.DataKey.MESSAGE_ID]?: ""
-                if(TextUtils.isDigitsOnly(msgId)) {
-
-                }
-            }
-        }
-
+        var clickAction: String? = null
         remoteMessage.notification?.let {
             Timber.e("Message Notification Body: ${it.body}")
+            clickAction = it.clickAction
+        }
+
+        remoteMessage.data.let { data ->
+            Timber.e("Message data payload: $data")
+
+            clickAction?.let { clickAction ->
+                val intent = Intent(clickAction)
+                intent.putExtra(Const.FcmMessaging.DataKey.SENDER_ID, data[Const.FcmMessaging.DataKey.SENDER_ID])
+                intent.putExtra(Const.FcmMessaging.DataKey.SENDER_NAME, data[Const.FcmMessaging.DataKey.SENDER_NAME])
+                intent.putExtra(Const.FcmMessaging.DataKey.SENDER_FCM_TOKEN, data[Const.FcmMessaging.DataKey.SENDER_FCM_TOKEN])
+                intent.putExtra(Const.FcmMessaging.DataKey.CHALLENGE_ID, data[Const.FcmMessaging.DataKey.CHALLENGE_ID])
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+            }
         }
     }
 

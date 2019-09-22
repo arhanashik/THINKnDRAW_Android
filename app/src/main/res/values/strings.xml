@@ -28,4 +28,6 @@
     <string name="txt_online">Online</string>
     <string name="txt_invite">Invite</string>
     <string name="txt_vs">VS</string>
+    <string name="txt_accept">Accept</string>
+    <string name="txt_new_challenge">XYZ challenged you</string>
 </resources>

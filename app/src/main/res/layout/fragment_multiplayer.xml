@@ -48,6 +48,8 @@
             android:id="@+id/tv_question"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             tools:text="Draw a car with 90% accuracy"
             android:textSize="20sp"
             android:textColor="@android:color/black"

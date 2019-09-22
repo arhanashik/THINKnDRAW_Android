@@ -17,6 +17,41 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph_main" />
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_new_challenge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:constraint_referenced_ids="tv_new_challenge,btn_accept"/>
+
+        <TextView
+            android:id="@+id/tv_new_challenge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:padding="16dp"
+            android:text="@string/txt_new_challenge"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_accept"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:text="@string/txt_accept"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@color/colorAccent"
+            app:rippleColor="@android:color/white"
+            app:cornerRadius="10dp"
+            app:layout_constraintTop_toTopOf="@+id/tv_new_challenge"
+            app:layout_constraintEnd_toEndOf="@+id/tv_new_challenge"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_new_challenge"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

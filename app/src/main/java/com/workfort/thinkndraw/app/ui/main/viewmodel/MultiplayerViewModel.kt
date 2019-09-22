@@ -1,4 +1,4 @@
-package com.workfort.thinkndraw.app.ui.main.view.viewmodel
+package com.workfort.thinkndraw.app.ui.main.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -50,7 +50,8 @@ class MultiplayerViewModel: ViewModel() {
         }
     }
 
-    fun acceptChallenge(player: UserEntity) {
+    fun acceptChallenge() {
+        val player = mCurrentPlayerLiveData.value?.second?: return
         Timber.e("accept challenge by ${player.name} : ${player.fcmToken}")
         val senderId = PrefUtil.get<String>(PrefProp.USER_ID, null)?: return
         val senderName = PrefUtil.get<String>(PrefProp.USER_NAME, null)?: "UNKNOWN"
@@ -163,6 +164,14 @@ class MultiplayerViewModel: ViewModel() {
                 }
             })
         }
+    }
+
+    fun clearData() {
+        mCurrentPlayerLiveData.value = null
+        mCurrentChallengeLiveData.value = null
+        mCurrentChallengeClassId = -1
+        mMyBoard = false
+        mResultsLiveData.value = null
     }
 
     override fun onCleared() {

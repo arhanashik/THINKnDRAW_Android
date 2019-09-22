@@ -71,10 +71,10 @@ object FirebaseDbUtil {
                 for (dataSnapshot in dataSnapshots.children) {
 //                    Log.e(TAG, dataSnapshot.toString())
                     val userId = dataSnapshot.key?: "UNKNOWN"
-//                    if(userId == myUserId.toString()) continue
+                    if(userId == myUserId.toString()) continue
 
                     val user = dataSnapshot.getValue(UserEntity::class.java)
-                    if(userId == myUserId.toString()) user?.name = user?.name + "(me)"
+//                    if(userId == myUserId.toString()) user?.name = user?.name + "(me)"
                     users[userId] = user
                 }
 

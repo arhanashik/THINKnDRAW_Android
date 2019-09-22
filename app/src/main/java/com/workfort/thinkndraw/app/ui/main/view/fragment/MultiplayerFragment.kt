@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.data.local.pref.PrefProp
@@ -16,10 +18,11 @@ import com.workfort.thinkndraw.app.data.local.pref.PrefUtil
 import com.workfort.thinkndraw.app.data.local.user.UserEntity
 import com.workfort.thinkndraw.app.ui.main.adapter.UserAdapter
 import com.workfort.thinkndraw.app.ui.main.callback.SelectPlayerCallback
-import com.workfort.thinkndraw.app.ui.main.view.viewmodel.MultiplayerViewModel
+import com.workfort.thinkndraw.app.ui.main.viewmodel.MultiplayerViewModel
 import com.workfort.thinkndraw.databinding.FragmentMultiplayerBinding
 import com.workfort.thinkndraw.databinding.PromptUsersBinding
 import com.workfort.thinkndraw.util.helper.ClassifierUtil
+import com.workfort.thinkndraw.util.helper.MediaPlayerUtil
 import com.workfort.thinkndraw.util.helper.Toaster
 import com.workfort.thinkndraw.util.lib.firebase.callback.LastOnlineCallback
 import com.workfort.thinkndraw.util.lib.firebase.callback.OnlineUsersCallback
@@ -34,6 +37,7 @@ class MultiplayerFragment: Fragment() {
 
     private lateinit var mMultiplayerViewModel: MultiplayerViewModel
 
+    private lateinit var mUsersDialog: BottomSheetDialog
     private lateinit var mUserAdapter: UserAdapter
 
     private lateinit var mClassifier: ClassifierUtil
@@ -59,7 +63,7 @@ class MultiplayerFragment: Fragment() {
         }
 
         initClassifier()
-        initUsers()
+        if(mMultiplayerViewModel.mCurrentPlayerLiveData.value == null) initUsers()
 
         observeData()
 
@@ -93,9 +97,10 @@ class MultiplayerFragment: Fragment() {
                 return@Observer
             }
 
-            Timber.e("Multiplayer challenge ${it.first} : ${it.second}")
+//            Timber.e("Multiplayer challenge ${it.first} : ${it.second}")
             mBinding.groupCounter.visibility = View.INVISIBLE
             mBinding.groupCanvas.visibility = View.VISIBLE
+            mBinding.layoutMultiplayerResult.containerResult.visibility = View.INVISIBLE
             val question = "Draw ${it.second} with 90% accuracy"
             mBinding.tvQuestion.text = question
         })
@@ -112,6 +117,7 @@ class MultiplayerFragment: Fragment() {
         mUserAdapter = UserAdapter()
         mUserAdapter.setCallback(object: SelectPlayerCallback {
             override fun onSelect(userId: String, user: UserEntity) {
+                mUsersDialog.dismiss()
                 val player = Pair(userId, user)
                 mMultiplayerViewModel.mCurrentPlayerLiveData.postValue(player)
                 mMultiplayerViewModel.selectChallenge()
@@ -126,27 +132,27 @@ class MultiplayerFragment: Fragment() {
 
         binding.rvUsers.adapter = mUserAdapter
 
-        val dialog = BottomSheetDialog(context!!)
-        dialog.setContentView(binding.root)
-        dialog.show()
+        mUsersDialog = BottomSheetDialog(context!!)
+        mUsersDialog.setContentView(binding.root)
+        mUsersDialog.show()
     }
 
     private fun loadUsers() {
         FirebaseDbUtil.getUsers(object: UsersCallback {
             override fun onResponse(users: HashMap<String, UserEntity?>) {
-                mUserAdapter.setUsers(users)
+                if(::mUserAdapter.isInitialized) mUserAdapter.setUsers(users)
             }
         })
 
         FirebaseDbUtil.getOnlineUsers(object: OnlineUsersCallback {
             override fun onResponse(userIds: ArrayList<String>) {
-                mUserAdapter.setOnlineStatus(userIds)
+                if(::mUserAdapter.isInitialized) mUserAdapter.setOnlineStatus(userIds)
             }
         })
 
         FirebaseDbUtil.getLastOnline(object: LastOnlineCallback {
             override fun onResponse(lastOnlineList: HashMap<String, Long>) {
-                mUserAdapter.setLastSeen(lastOnlineList)
+                if(::mUserAdapter.isInitialized) mUserAdapter.setLastSeen(lastOnlineList)
             }
         })
     }
@@ -180,6 +186,47 @@ class MultiplayerFragment: Fragment() {
                     resultView.tvPlayer1Class.text = it.value?.className
                     resultView.tvPlayer1Accuracy.text = it.value?.accuracy.toString()
                 }
+            }
+
+            if(results.size > 1) {
+                val playerIds = results.keys.toTypedArray()
+                val resultValues = results.values.toTypedArray()
+                val player1Accuracy = resultValues[0]?.accuracy?: 0f
+                val player2Accuracy = resultValues[1]?.accuracy?: 0f
+
+                var winner = false
+                val finalResult = if(player1Accuracy == player2Accuracy) {
+                    "Draw"
+                } else if(player1Accuracy > player2Accuracy) {
+                    if(playerIds[0] == opponent.first) "Couldn't win this time"
+                    else {
+                        winner = true
+                        "Yes, you are the winner!"
+                    }
+                } else {
+                    if(playerIds[0] == opponent.first) {
+                        winner = true
+                        "Yes, you are the winner!"
+                    }
+                    else "Couldn't win this time"
+                }
+
+                MediaPlayerUtil.play(
+                    context!!, if(winner) R.raw.sound_success else R.raw.sound_failed
+                )
+
+                AlertDialog.Builder(context!!)
+                    .setTitle("Result")
+                    .setMessage(finalResult)
+                    .setCancelable(false)
+                    .setPositiveButton("Go to home") { _, _ ->
+                        mMultiplayerViewModel.clearData()
+                        findNavController().navigate(
+                            MultiplayerFragmentDirections.fragmentMultiplayerToFragmentHome()
+                        )
+                    }
+                    .create()
+                    .show()
             }
         }
     }
