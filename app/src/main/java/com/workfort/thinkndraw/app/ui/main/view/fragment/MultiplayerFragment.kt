@@ -11,10 +11,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.workfort.thinkndraw.R
 import com.workfort.thinkndraw.app.data.local.result.Result
+import com.workfort.thinkndraw.app.data.local.user.UserEntity
+import com.workfort.thinkndraw.app.ui.main.adapter.UserAdapter
+import com.workfort.thinkndraw.app.ui.main.callback.SelectPlayerCallback
 import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
 import com.workfort.thinkndraw.databinding.FragmentMultiplayerBinding
+import com.workfort.thinkndraw.databinding.PromptUsersBinding
 import com.workfort.thinkndraw.util.helper.ClassifierUtil
 import com.workfort.thinkndraw.util.helper.FirebaseDbUtil
 import com.workfort.thinkndraw.util.helper.MediaPlayerUtil
@@ -25,6 +30,8 @@ class MultiplayerFragment: Fragment() {
     private lateinit var mBinding: FragmentMultiplayerBinding
 
     private lateinit var mQuizViewModel: QuizViewModel
+
+    private lateinit var mUserAdapter: UserAdapter
 
     private lateinit var mClassifier: ClassifierUtil
 
@@ -41,6 +48,8 @@ class MultiplayerFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        FirebaseDbUtil.observeMyConnectivity()
+
         activity?.let {
             mQuizViewModel = ViewModelProviders.of(it).get(QuizViewModel::class.java)
         }
@@ -48,8 +57,10 @@ class MultiplayerFragment: Fragment() {
         initClassifier()
         observeData()
 
-        FirebaseDbUtil.observeMyConnectivity()
-        FirebaseDbUtil.getOnlineUsers()
+        initUsers()
+        loadUsers()
+
+//        FirebaseDbUtil.getOnlineUsers()
 
         mQuizViewModel.selectChallenge()
 
@@ -72,6 +83,46 @@ class MultiplayerFragment: Fragment() {
 
             val question = "Draw ${it.second} with 90% accuracy"
             mBinding.tvQuestion.text = question
+        })
+    }
+
+    private fun initUsers() {
+
+        mUserAdapter = UserAdapter()
+        mUserAdapter.setCallback(object: SelectPlayerCallback {
+            override fun onSelect(userId: String, user: UserEntity) {
+                Toast.makeText(context!!, "Play with ${user.name}", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        val binding = DataBindingUtil.inflate<PromptUsersBinding>(
+            LayoutInflater.from(context), R.layout.prompt_users, null, false
+        )
+
+        binding.rvUsers.adapter = mUserAdapter
+
+        val dialog = BottomSheetDialog(context!!)
+        dialog.setContentView(binding.root)
+        dialog.show()
+    }
+
+    private fun loadUsers() {
+        FirebaseDbUtil.getUsers(object: FirebaseDbUtil.UsersCallback {
+            override fun onResponse(users: HashMap<String, UserEntity?>) {
+                mUserAdapter.setUsers(users)
+            }
+        })
+
+        FirebaseDbUtil.getOnlineUsers(object: FirebaseDbUtil.OnlineUsersCallback {
+            override fun onResponse(userIds: ArrayList<String>) {
+                mUserAdapter.setOnlineStatus(userIds)
+            }
+        })
+
+        FirebaseDbUtil.getLastOnline(object: FirebaseDbUtil.LastOnlineCallback {
+            override fun onResponse(lastOnlineList: HashMap<String, Long>) {
+                mUserAdapter.setLastSeen(lastOnlineList)
+            }
         })
     }
 
@@ -99,8 +150,8 @@ class MultiplayerFragment: Fragment() {
         mQuizViewModel.mCurrentChallengeLiveData.value?.let {
             if(result.number == it.first && result.probability >= 0.9) {
                 MediaPlayerUtil.play(context!!, R.raw.sound_success)
-                var title = "Congratulations"
-                var message = "Your drawing is great! Keep up!"
+                val title = "Congratulations"
+                val message = "Your drawing is great! Keep up!"
 
                 AlertDialog.Builder(context!!)
                     .setTitle(title)

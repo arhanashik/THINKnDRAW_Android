@@ -14,12 +14,12 @@ object FirebaseDbUtil {
     }
 
     fun observeMyConnectivity() {
-        val name = PrefUtil.get<String>(PrefProp.USER_NAME, null)?: return
+        val userId = PrefUtil.get<Int>(PrefProp.USER_ID, null)?: return
 
         val database = FirebaseDatabase.getInstance()
-        val myConnectionsRef = database.getReference("online_users/$name")
+        val myConnectionsRef = database.getReference("online_users/$userId")
 
-        val lastOnlineRef = database.getReference("last_online/$name")
+        val lastOnlineRef = database.getReference("last_online/$userId")
 
         val connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected")
         connectedRef.addValueEventListener(object : ValueEventListener {
@@ -55,28 +55,109 @@ object FirebaseDbUtil {
             .addOnFailureListener { callback.onComplete(false) }
     }
 
-    fun getOnlineUsers() {
-        val onlineUsers = mDatabase.child("online_users").ref
+    fun getUsers(callback: UsersCallback) {
+        val myUserId = PrefUtil.get<Int>(PrefProp.USER_ID, null)
 
+        val onlineUsersDb = mDatabase.child("users").ref
+
+        val users = HashMap<String, UserEntity?>()
         val connectionStatusListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Log.e(TAG, "Count: " + dataSnapshot.childrenCount.toString())
+            override fun onDataChange(dataSnapshots: DataSnapshot) {
+//                Log.e(TAG, "Count: " + dataSnapshots.childrenCount.toString())
 
-                for (postSnapshot in dataSnapshot.children) {
-                    Log.e(TAG, dataSnapshot.value.toString())
+                for (dataSnapshot in dataSnapshots.children) {
+//                    Log.e(TAG, dataSnapshot.toString())
+                    val userId = dataSnapshot.key?: "UNKNOWN"
+//                    if(userId == myUserId.toString()) continue
+
+                    val user = dataSnapshot.getValue(UserEntity::class.java)
+                    if(userId == myUserId.toString()) user?.name = user?.name + "(me)"
+                    users[userId] = user
                 }
+
+                callback.onResponse(users)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                callback.onResponse(users)
             }
         }
 
-        onlineUsers.addValueEventListener(connectionStatusListener)
+        onlineUsersDb.addValueEventListener(connectionStatusListener)
+    }
+
+    fun getOnlineUsers(callback: OnlineUsersCallback) {
+        val onlineUsersDb = mDatabase.child("online_users").ref
+
+        val onlineUsers = ArrayList<String>()
+        val connectionStatusListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshots: DataSnapshot) {
+//                Log.e(TAG, "Count: " + dataSnapshots.childrenCount.toString())
+
+                for (dataSnapshot in dataSnapshots.children) {
+//                    Log.e(TAG, dataSnapshot.toString())
+                    val userId = dataSnapshot.key?: "UNKNOWN"
+                    val devices = dataSnapshot.value as HashMap<*, *>
+
+                    if(!devices.isNullOrEmpty()) {
+                        onlineUsers.add(userId)
+                    }
+                }
+
+                callback.onResponse(onlineUsers)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                callback.onResponse(onlineUsers)
+            }
+        }
+
+        onlineUsersDb.addValueEventListener(connectionStatusListener)
+    }
+
+    fun getLastOnline(callback: LastOnlineCallback) {
+        val onlineUsersDb = mDatabase.child("last_online").ref
+
+        val lastOnlineList = HashMap<String, Long>()
+        val connectionStatusListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshots: DataSnapshot) {
+//                Log.e(TAG, "Count: " + dataSnapshots.childrenCount.toString())
+
+                for (dataSnapshot in dataSnapshots.children) {
+//                    Log.e(TAG, dataSnapshot.toString())
+                    val userId = dataSnapshot.key?: "UNKNOWN"
+                    val time = dataSnapshot.value as Long
+
+                    lastOnlineList[userId] = time
+                }
+
+                callback.onResponse(lastOnlineList)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                callback.onResponse(lastOnlineList)
+            }
+        }
+
+        onlineUsersDb.addValueEventListener(connectionStatusListener)
     }
 
     interface AddUserCallback {
         fun onComplete(success: Boolean)
+    }
+
+    interface UsersCallback {
+        fun onResponse(users: HashMap<String, UserEntity?>)
+    }
+
+    interface OnlineUsersCallback {
+        fun onResponse(userIds: ArrayList<String>)
+    }
+
+    interface LastOnlineCallback {
+        fun onResponse(lastOnlineList: HashMap<String, Long>)
     }
 }

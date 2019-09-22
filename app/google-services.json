@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "237715953197",
+    "firebase_url": "https://thinkndrawandroid.firebaseio.com",
+    "project_id": "thinkndrawandroid",
+    "storage_bucket": "thinkndrawandroid.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237715953197:android:ded06b0f5fdb87c0998aa4",
+        "android_client_info": {
+          "package_name": "com.workfort.thinkndraw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "237715953197-uvurp4kilssme3gg4ipsh36gv5diadbe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.workfort.thinkndraw",
+            "certificate_hash": "2b46dd93181ceae5adcfdcea3f02eb8f50a4af3a"
+          }
+        },
+        {
+          "client_id": "237715953197-cl6btdoie2ai0hat9l7hp5afqgfcha0r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwE5BPQPU22nF1ziaNynj2j-Iu8LfRLno"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "237715953197-cl6btdoie2ai0hat9l7hp5afqgfcha0r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
