@@ -67,6 +67,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        if(mNavController.currentDestination?.id == R.id.fragmentHome) {
+            finish()
+            return
+        }
 
         if(mNavController.currentDestination?.id != R.id.fragmentMultiplayer) {
             mBinding.groupNewChallenge.visibility = View.GONE

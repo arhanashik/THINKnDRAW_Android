@@ -101,7 +101,7 @@ class MultiplayerFragment: Fragment() {
             mBinding.groupCounter.visibility = View.INVISIBLE
             mBinding.groupCanvas.visibility = View.VISIBLE
             mBinding.layoutMultiplayerResult.containerResult.visibility = View.INVISIBLE
-            val question = "Draw ${it.second} with 90% accuracy"
+            val question = "Draw ${it.second}"
             mBinding.tvQuestion.text = question
         })
 
