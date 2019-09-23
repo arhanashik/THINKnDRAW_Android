@@ -18,6 +18,7 @@ import com.workfort.thinkndraw.app.data.local.constant.Const
 import com.workfort.thinkndraw.app.data.local.user.UserEntity
 import com.workfort.thinkndraw.app.ui.main.viewmodel.MultiplayerViewModel
 import com.workfort.thinkndraw.databinding.ActivityMainBinding
+import com.workfort.thinkndraw.util.helper.MediaPlayerUtil
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mBroadcastManager: LocalBroadcastManager
     private val mBroadCastReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+            MediaPlayerUtil.playNotification()
             intent?.let { checkNotificationIntent(intent) }
         }
     }
