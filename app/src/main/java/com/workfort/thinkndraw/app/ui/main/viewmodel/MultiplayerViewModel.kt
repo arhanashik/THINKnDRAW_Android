@@ -32,6 +32,8 @@ class MultiplayerViewModel: ViewModel() {
     var mCurrentChallengeClassId = -1
     private var mMyBoard = false
     var mCurrentMatch = ""
+    var mStartTime = 0L
+    var mEndTime = 0L
 
     val mResultsLiveData = MutableLiveData<HashMap<String, MultiplayerResult?>>()
 
@@ -157,7 +159,7 @@ class MultiplayerViewModel: ViewModel() {
 
     fun saveChallengeResult(result: Result) {
         val multiplayerResult = MultiplayerResult(
-            result.number, result.className(), result.probability, 0L
+            result.number, result.className(), result.probability, mEndTime - mStartTime
         )
 
         mCurrentPlayerLiveData.value?.let {
@@ -174,6 +176,8 @@ class MultiplayerViewModel: ViewModel() {
         mCurrentChallengeLiveData.value = null
         mCurrentChallengeClassId = -1
         mMyBoard = false
+        mStartTime = 0
+        mEndTime = 0
         mResultsLiveData.value = null
     }
 

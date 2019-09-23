@@ -43,6 +43,17 @@
             android:textStyle="bold"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/tv_player1_class"
+            app:layout_constraintBottom_toTopOf="@+id/tv_player1_time"/>
+
+        <TextView
+            android:id="@+id/tv_player1_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="1min 30sec"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/tv_player1_accuracy"
             app:layout_constraintBottom_toTopOf="@+id/tv_vs"/>
 
         <ProgressBar
@@ -98,6 +109,17 @@
             android:textStyle="bold"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/tv_player2_class"
+            app:layout_constraintBottom_toTopOf="@+id/tv_player2_time"/>
+
+        <TextView
+            android:id="@+id/tv_player2_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="1min 30sec"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/tv_player2_accuracy"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <ProgressBar

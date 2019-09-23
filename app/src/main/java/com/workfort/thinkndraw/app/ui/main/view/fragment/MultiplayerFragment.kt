@@ -69,7 +69,10 @@ class MultiplayerFragment: Fragment() {
 
         loadUsers()
 
-        mBinding.btnCheck.setOnClickListener { classify() }
+        mBinding.btnCheck.setOnClickListener {
+            mMultiplayerViewModel.mEndTime = System.currentTimeMillis()
+            classify()
+        }
         mBinding.btnClear.setOnClickListener { clearPaint() }
     }
 
@@ -123,6 +126,7 @@ class MultiplayerFragment: Fragment() {
                 mMultiplayerViewModel.selectChallenge()
                 mMultiplayerViewModel.inviteToChallenge(user)
                 Toaster.showToast("Invitation sent to ${user.name}")
+                mMultiplayerViewModel.mStartTime = System.currentTimeMillis()
             }
         })
 
@@ -174,17 +178,20 @@ class MultiplayerFragment: Fragment() {
         mMultiplayerViewModel.mResultsLiveData.value?.let { results ->
             results.forEach {
                 val resultView = mBinding.layoutMultiplayerResult
+                val timeStr = "${(it.value?.time?: 0L) / 1000 } second(s)"
                 if(it.key == opponent.first) {
                     resultView.pbPlayer2.visibility = View.GONE
                     resultView.tvPlayer2Name.text = opponent.second.name
                     resultView.tvPlayer2Class.text = it.value?.className
                     resultView.tvPlayer2Accuracy.text = it.value?.accuracy.toString()
+                    resultView.tvPlayer2Time.text = timeStr
                 } else {
                     resultView.pbPlayer1.visibility = View.GONE
                     val name = PrefUtil.get(PrefProp.USER_NAME, "") + "(me)"
                     resultView.tvPlayer1Name.text = name
                     resultView.tvPlayer1Class.text = it.value?.className
                     resultView.tvPlayer1Accuracy.text = it.value?.accuracy.toString()
+                    resultView.tvPlayer1Time.text = timeStr
                 }
             }
 

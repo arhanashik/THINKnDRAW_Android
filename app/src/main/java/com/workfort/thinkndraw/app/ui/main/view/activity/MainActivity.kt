@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         checkNotificationIntent(intent)
 
         mBinding.btnAccept.setOnClickListener {
+            mMultiplayerViewModel.mStartTime = System.currentTimeMillis()
             mMultiplayerViewModel.acceptChallenge()
             goToMultiplayer()
         }
