@@ -22,4 +22,12 @@
     <string name="txt_starts_in">Starts In</string>
     <string name="hint_enter_name">Your name</string>
     <string name="txt_next">Next</string>
+    <string name="txt_play">Play</string>
+    <string name="txt_offilne">Offline</string>
+    <string name="txt_users">Users</string>
+    <string name="txt_online">Online</string>
+    <string name="txt_invite">Invite</string>
+    <string name="txt_vs">VS</string>
+    <string name="txt_accept">Accept</string>
+    <string name="txt_new_challenge">XYZ challenged you</string>
 </resources>

@@ -48,6 +48,8 @@
             android:id="@+id/tv_question"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             tools:text="Draw a car with 90% accuracy"
             android:textSize="20sp"
             android:textColor="@android:color/black"
@@ -129,6 +131,10 @@
             app:layout_constraintTop_toBottomOf="@+id/btn_check"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <include
+            android:id="@+id/layout_multiplayer_result"
+            layout="@layout/layout_multiplayer_result"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

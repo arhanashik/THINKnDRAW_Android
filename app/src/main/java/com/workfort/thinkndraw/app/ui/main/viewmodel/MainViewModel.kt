@@ -1,4 +1,4 @@
-package com.workfort.thinkndraw.app.ui.main.view.viewmodel
+package com.workfort.thinkndraw.app.ui.main.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

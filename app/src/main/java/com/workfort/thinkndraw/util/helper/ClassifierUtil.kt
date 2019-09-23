@@ -90,6 +90,6 @@ class ClassifierUtil @Throws(IOException::class) constructor(activity: Activity)
         const val IMG_WIDTH = 28
         private const val NUM_CHANNEL = 1
         private const val NUM_CLASSES = 5
-        const val THRESH_HOLD = 0.5 //min 90% accuracy is required to be a right prediction
+        const val THRESH_HOLD = 0.7 //min 90% accuracy is required to be a right prediction
     }
 }

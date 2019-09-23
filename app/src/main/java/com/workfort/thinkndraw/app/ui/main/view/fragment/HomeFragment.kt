@@ -18,8 +18,9 @@ import com.workfort.thinkndraw.app.data.local.user.UserEntity
 import com.workfort.thinkndraw.app.ui.quiz.view.activity.QuizActivity
 import com.workfort.thinkndraw.databinding.FragmentHomeBinding
 import com.workfort.thinkndraw.databinding.PromptInputNameBinding
-import com.workfort.thinkndraw.util.helper.FirebaseDbUtil
+import com.workfort.thinkndraw.util.lib.firebase.util.FirebaseDbUtil
 import com.workfort.thinkndraw.util.helper.ImageLoader
+import com.workfort.thinkndraw.util.lib.firebase.callback.AddUserCallback
 import java.util.*
 import kotlin.random.Random
 
@@ -88,11 +89,10 @@ class HomeFragment: Fragment() {
             } else {
                 binding.tilName.error = null
 
-                val id = Random.nextInt(1000, 9999)
+                val id = Random.nextInt(1000, 9999).toString()
                 val nameStr = name.toString().toUpperCase(Locale.getDefault())
 
-                FirebaseDbUtil.addUser(id, UserEntity(nameStr),
-                    object: FirebaseDbUtil.AddUserCallback {
+                FirebaseDbUtil.addUser(id, UserEntity(nameStr), object: AddUserCallback {
                     override fun onComplete(success: Boolean) {
                         if(success) {
                             PrefUtil.set(PrefProp.USER_ID, id)
