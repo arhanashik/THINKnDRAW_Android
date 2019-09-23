@@ -92,8 +92,12 @@ class HomeFragment: Fragment() {
                 val id = Random.nextInt(1000, 9999).toString()
                 val nameStr = name.toString().toUpperCase(Locale.getDefault())
 
+                binding.btnNext.isEnabled = false
+                binding.pb.visibility = View.VISIBLE
                 FirebaseDbUtil.addUser(id, UserEntity(nameStr), object: AddUserCallback {
                     override fun onComplete(success: Boolean) {
+                        binding.btnNext.isEnabled = true
+                        binding.pb.visibility = View.INVISIBLE
                         if(success) {
                             PrefUtil.set(PrefProp.USER_ID, id)
                             PrefUtil.set(PrefProp.USER_NAME, nameStr)

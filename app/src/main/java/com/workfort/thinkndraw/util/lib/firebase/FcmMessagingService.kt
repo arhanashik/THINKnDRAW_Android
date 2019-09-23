@@ -48,6 +48,7 @@ class FcmMessagingService: FirebaseMessagingService() {
                 intent.putExtra(Const.FcmMessaging.DataKey.SENDER_NAME, data[Const.FcmMessaging.DataKey.SENDER_NAME])
                 intent.putExtra(Const.FcmMessaging.DataKey.SENDER_FCM_TOKEN, data[Const.FcmMessaging.DataKey.SENDER_FCM_TOKEN])
                 intent.putExtra(Const.FcmMessaging.DataKey.CHALLENGE_ID, data[Const.FcmMessaging.DataKey.CHALLENGE_ID])
+                intent.putExtra(Const.FcmMessaging.DataKey.MATCH, data[Const.FcmMessaging.DataKey.MATCH])
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             }
         }

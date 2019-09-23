@@ -86,6 +86,7 @@ object Const {
             const val MESSAGE_ID = "message_id"
             const val MESSAGE = "message"
             const val CHALLENGE_ID = "challenge_id"
+            const val MATCH = "match"
         }
 
         object Action {

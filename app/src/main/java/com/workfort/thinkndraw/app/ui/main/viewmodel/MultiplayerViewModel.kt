@@ -31,10 +31,12 @@ class MultiplayerViewModel: ViewModel() {
     val mCurrentChallengeLiveData = MutableLiveData<Pair<Int, String>>()
     var mCurrentChallengeClassId = -1
     private var mMyBoard = false
+    var mCurrentMatch = ""
 
     val mResultsLiveData = MutableLiveData<HashMap<String, MultiplayerResult?>>()
 
     fun inviteToChallenge(player: UserEntity) {
+        mCurrentMatch = System.currentTimeMillis().toString()
         val senderId = PrefUtil.get<String>(PrefProp.USER_ID, null)?: return
         val senderName = PrefUtil.get<String>(PrefProp.USER_NAME, null)?: "UNKNOWN"
         val senderFcmToken = PrefUtil.get<String>(PrefProp.LAST_KNOWN_FCM_TOKEN, null)?: return
@@ -136,6 +138,7 @@ class MultiplayerViewModel: ViewModel() {
         data.put(Const.FcmMessaging.DataKey.SENDER_NAME, senderName)
         data.put(Const.FcmMessaging.DataKey.SENDER_FCM_TOKEN, senderFcmToken)
         data.put(Const.FcmMessaging.DataKey.CHALLENGE_ID, mCurrentChallengeClassId.toString())
+        data.put(Const.FcmMessaging.DataKey.MATCH, mCurrentMatch)
 //        data.put(Const.FcmMessaging.DataKey.MESSAGE, message)
 
         return data
@@ -143,7 +146,7 @@ class MultiplayerViewModel: ViewModel() {
 
     fun observeChallenge() {
         mCurrentPlayerLiveData.value?.let {
-            FirebaseDbUtil.observeMatch(it.first, mMyBoard, object: BoardStatusCallback {
+            FirebaseDbUtil.observeMatch(it.first, mCurrentMatch, mMyBoard, object: BoardStatusCallback {
                 override fun onResponse(results: HashMap<String, MultiplayerResult?>) {
 //                    Timber.e(results.toString())
                     mResultsLiveData.postValue(results)
@@ -158,7 +161,7 @@ class MultiplayerViewModel: ViewModel() {
         )
 
         mCurrentPlayerLiveData.value?.let {
-            FirebaseDbUtil.saveMatchResult(it.first, multiplayerResult, mMyBoard, object: SaveResultCallback {
+            FirebaseDbUtil.saveMatchResult(it.first, mCurrentMatch, multiplayerResult, mMyBoard, object: SaveResultCallback {
                 override fun onComplete(success: Boolean) {
 
                 }

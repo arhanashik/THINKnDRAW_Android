@@ -160,13 +160,14 @@ object FirebaseDbUtil {
 
     fun observeMatch(
         opponentId: String,
+        match: String,
         myBoard: Boolean,
         callback: BoardStatusCallback
     ) {
         val userId = PrefUtil.get<String>(PrefProp.USER_ID, null)?: return
         val board = if(myBoard) "${userId}vs$opponentId" else "${opponentId}vs$userId"
-        val boardDb = mDatabase.child("matches").child(board).ref
-        boardDb.removeValue()
+        val boardDb = mDatabase.child("matches").child(board).child(match).ref
+//        boardDb.removeValue()
 
         val boardStatus = HashMap<String, MultiplayerResult?>()
         val boardListener = object : ValueEventListener {
@@ -196,13 +197,14 @@ object FirebaseDbUtil {
 
     fun saveMatchResult(
         opponentId: String,
+        match: String,
         result: MultiplayerResult,
         myBoard: Boolean,
         callback: SaveResultCallback
     ) {
         val userId = PrefUtil.get<String>(PrefProp.USER_ID, null)?: return
         val board = if(myBoard) "${userId}vs$opponentId" else "${opponentId}vs$userId"
-        mDatabase.child("matches").child(board).child(userId).setValue(result)
+        mDatabase.child("matches").child(board).child(match).child(userId).setValue(result)
             .addOnSuccessListener { callback.onComplete(true) }
             .addOnFailureListener { callback.onComplete(false) }
     }

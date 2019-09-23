@@ -69,12 +69,14 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
 
         if(mNavController.currentDestination?.id != R.id.fragmentMultiplayer) {
+            mBinding.groupNewChallenge.visibility = View.GONE
             super.onBackPressed()
         } else {
             AlertDialog.Builder(this)
                 .setTitle("Exit Multiplayer")
                 .setMessage("Are you surely want to exit multilayer mood?")
                 .setPositiveButton("Yes") { _, _ ->
+                    mBinding.groupNewChallenge.visibility = View.GONE
                     mMultiplayerViewModel.clearData()
                     super.onBackPressed()
                 }
@@ -104,11 +106,13 @@ class MainActivity : AppCompatActivity() {
         val senderName = intent.getStringExtra(Const.FcmMessaging.DataKey.SENDER_NAME)?: "Unknown"
         val senderFcmToken = intent.getStringExtra(Const.FcmMessaging.DataKey.SENDER_FCM_TOKEN)?: ""
         val challengeId = intent.getStringExtra(Const.FcmMessaging.DataKey.CHALLENGE_ID)?: "-1"
+        val match = intent.getStringExtra(Const.FcmMessaging.DataKey.MATCH)?: "match"
         when(action) {
             Const.FcmMessaging.Action.Multiplayer.INVITE -> {
                 val playerEntity = UserEntity(senderName, senderFcmToken)
                 val player = Pair(senderId, playerEntity)
                 mMultiplayerViewModel.mCurrentPlayerLiveData.postValue(player)
+                mMultiplayerViewModel.mCurrentMatch = match
                 mMultiplayerViewModel.selectChallenge(false, challengeId.toInt())
                 mBinding.groupNewChallenge.visibility = View.VISIBLE
                 val newChallengeTxt = getString(R.string.txt_new_challenge).replace(
