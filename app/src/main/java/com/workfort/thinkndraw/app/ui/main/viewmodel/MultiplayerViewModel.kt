@@ -1,5 +1,6 @@
 package com.workfort.thinkndraw.app.ui.main.viewmodel
 
+import androidx.core.util.forEach
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.workfort.thinkndraw.app.data.local.constant.Const
@@ -97,14 +98,14 @@ class MultiplayerViewModel: ViewModel() {
     }
 
     fun selectChallenge(random: Boolean = true, challengeId: Int = -1) {
-        mCurrentChallengeClassId = if(random) Random.nextInt(0, 5) else challengeId
-        val challenge = when(mCurrentChallengeClassId) {
-            Const.Classes.ICE_CREAM.first -> Const.Classes.ICE_CREAM
-            Const.Classes.SQUARE.first -> Const.Classes.SQUARE
-            Const.Classes.APPLE.first -> Const.Classes.APPLE
-            Const.Classes.CAR.first -> Const.Classes.CAR
-            Const.Classes.BANANA.first -> Const.Classes.BANANA
-            else -> Const.Classes.BANANA
+        val classes = Const.CLASSIFICATION_CLASSES
+        mCurrentChallengeClassId = if(random) Random.nextInt(0, classes.size()) else challengeId
+        var challenge = Pair(0, classes[0])
+        classes.forEach { classIndex, className ->
+            if(classIndex == mCurrentChallengeClassId) {
+                challenge = Pair(classIndex, className)
+                return@forEach
+            }
         }
 
         mCurrentChallengeLiveData.postValue(challenge)

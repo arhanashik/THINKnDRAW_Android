@@ -2,7 +2,6 @@ package com.workfort.thinkndraw.app.ui.quiz.view.activity
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,6 +24,7 @@ import com.workfort.thinkndraw.util.helper.ClassifierUtil
 import com.workfort.thinkndraw.util.helper.ImageLoader
 import com.workfort.thinkndraw.util.helper.ImageUtil
 import com.workfort.thinkndraw.util.helper.MediaPlayerUtil
+import timber.log.Timber
 import java.io.IOException
 
 
@@ -108,10 +108,10 @@ class QuizActivity : AppCompatActivity() {
 
     private fun initClassifier() {
         try {
-            mClassifier = ClassifierUtil(this)
+            mClassifier = ClassifierUtil(ClassifierUtil.MODEL_5_CLASS, ClassifierUtil.NUM_CLASSES_5)
         } catch (e: IOException) {
             Toast.makeText(this, "Failed to create ClassifierUtil", Toast.LENGTH_SHORT).show()
-            Log.e("ClassifierUtil", "initClassifier(): Failed to create ClassifierUtil", e)
+            Timber.e(e)
         }
     }
 
@@ -178,7 +178,7 @@ class QuizActivity : AppCompatActivity() {
         )
         val className = result.className()
         val output = "Class: $className\nProbability: ${result.probability}\nList: ${result.probabilityArr.contentToString()}\nTimeCost: $timeCost"
-        Log.e("ClassifierUtil", output)
+        Timber.e(output)
 
         mQuizViewModel.mCurrentQuestionLiveData.value?.let {
             var success = false

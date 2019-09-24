@@ -1,5 +1,6 @@
 package com.workfort.thinkndraw.app.data.local.result
 
+import androidx.core.util.forEach
 import com.workfort.thinkndraw.app.data.local.constant.Const
 
 
@@ -28,14 +29,11 @@ class Result(probs: FloatArray, val timeCost: Long) {
     }
 
     fun className(): String {
-        return when(number) {
-            Const.Classes.ICE_CREAM.first -> Const.Classes.ICE_CREAM.second
-//            Const.Classes.CAT.first -> Const.Classes.CAT.second
-            Const.Classes.SQUARE.first -> Const.Classes.SQUARE.second
-            Const.Classes.APPLE.first -> Const.Classes.APPLE.second
-            Const.Classes.CAR.first -> Const.Classes.CAR.second
-            Const.Classes.BANANA.first -> Const.Classes.BANANA.second
-            else -> "Unknown"
+
+        Const.CLASSIFICATION_CLASSES.forEach { classIndex, className ->
+            if(classIndex == number) return className
         }
+
+        return "Unknown"
     }
 }

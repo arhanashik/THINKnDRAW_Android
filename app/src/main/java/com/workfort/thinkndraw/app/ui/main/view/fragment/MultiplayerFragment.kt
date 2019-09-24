@@ -78,7 +78,7 @@ class MultiplayerFragment: Fragment() {
 
     private fun initClassifier() {
         try {
-            mClassifier = ClassifierUtil(activity!!)
+            mClassifier = ClassifierUtil(ClassifierUtil.MODEL_5_CLASS, ClassifierUtil.NUM_CLASSES_5)
         } catch (e: IOException) {
             Toast.makeText(context, "Failed to create ClassifierUtil", Toast.LENGTH_SHORT).show()
             Timber.e(e)

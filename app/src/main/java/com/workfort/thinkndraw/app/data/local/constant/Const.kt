@@ -1,5 +1,7 @@
 package com.workfort.thinkndraw.app.data.local.constant
 
+import android.util.SparseArray
+
 object Const {
     object QuestionType {
         const val TYPE_A = 1
@@ -18,6 +20,35 @@ object Const {
         val APPLE = Pair(2, "Apple")
         val CAR = Pair(3, "Car")
         val BANANA = Pair(4, "Banana")
+    }
+
+    val CLASSIFICATION_CLASSES = get5ClassMap()
+
+    private fun get5ClassMap(): SparseArray<String> {
+        val classMap = SparseArray<String>()
+
+        classMap.put(0, "Ice-Cream")
+        classMap.put(1, "Square")
+        classMap.put(2, "Apple")
+        classMap.put(3, "Car")
+        classMap.put(4, "Banana")
+
+        return classMap
+    }
+
+    private fun get8ClassMap(): SparseArray<String> {
+        val classMap = SparseArray<String>()
+
+        classMap.put(0, "Fish")
+        classMap.put(1, "Umbrella")
+        classMap.put(2, "Banana")
+        classMap.put(3, "Square")
+        classMap.put(4, "Apple")
+        classMap.put(5, "Car")
+        classMap.put(6, "Ladder")
+        classMap.put(7, "Ice-Cream")
+
+        return classMap
     }
 
     object FcmMessaging {

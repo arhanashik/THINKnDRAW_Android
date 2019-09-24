@@ -1,7 +1,6 @@
 package com.workfort.thinkndraw.app.ui.main.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import com.workfort.thinkndraw.app.ui.quiz.viewmodel.QuizViewModel
 import com.workfort.thinkndraw.databinding.FragmentChallengeBinding
 import com.workfort.thinkndraw.util.helper.ClassifierUtil
 import com.workfort.thinkndraw.util.helper.MediaPlayerUtil
+import timber.log.Timber
 import java.io.IOException
 
 class ChallengeFragment: Fragment() {
@@ -55,10 +55,10 @@ class ChallengeFragment: Fragment() {
 
     private fun initClassifier() {
         try {
-            mClassifier = ClassifierUtil(activity!!)
+            mClassifier = ClassifierUtil(ClassifierUtil.MODEL_5_CLASS, ClassifierUtil.NUM_CLASSES_5)
         } catch (e: IOException) {
             Toast.makeText(context, "Failed to create ClassifierUtil", Toast.LENGTH_SHORT).show()
-            Log.e("ClassifierUtil", "initClassifier(): Failed to create ClassifierUtil", e)
+            Timber.e(e)
         }
     }
 
@@ -87,7 +87,7 @@ class ChallengeFragment: Fragment() {
         )
         val className = result.className()
         val output = "Class: $className\nProbability: ${result.probability}\nList: ${result.probabilityArr.contentToString()}\nTimeCost: $timeCost"
-        Log.e("ClassifierUtil", output)
+        Timber.e("ClassifierUtil $output")
 
         val resultTxt = "It's $className with ${result.probability}% accuracy"
         mBinding.tvAnswer.text = resultTxt
@@ -95,8 +95,8 @@ class ChallengeFragment: Fragment() {
         mQuizViewModel.mCurrentChallengeLiveData.value?.let {
             if(result.number == it.first && result.probability >= 0.9) {
                 MediaPlayerUtil.play(context!!, R.raw.sound_success)
-                var title = "Congratulations"
-                var message = "Your drawing is great! Keep up!"
+                val title = "Congratulations"
+                val message = "Your drawing is great! Keep up!"
 
                 AlertDialog.Builder(context!!)
                     .setTitle(title)
