@@ -91,6 +91,8 @@ class MultiplayerFragment: Fragment() {
 
 //            Timber.e("Multiplayer ${it.first} : ${it.second.name}")
             mMultiplayerViewModel.observeChallenge()
+            val opponent = "Playing with ${it.second.name}"
+            mBinding.tvOpponent.text = opponent
         })
 
         mMultiplayerViewModel.mCurrentChallengeLiveData.observe(viewLifecycleOwner, Observer {

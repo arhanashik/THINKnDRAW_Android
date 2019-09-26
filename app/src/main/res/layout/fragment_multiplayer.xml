@@ -42,7 +42,19 @@
             android:layout_height="wrap_content"
             android:visibility="invisible"
             tools:visibility="visible"
-            app:constraint_referenced_ids="tv_question,bg_paint_view,paint_view,btn_check,btn_clear,tv_answer"/>
+            app:constraint_referenced_ids="tv_opponent,tv_question,bg_paint_view,paint_view,btn_check,btn_clear,tv_answer"/>
+
+        <TextView
+            android:id="@+id/tv_opponent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            tools:text="Playing with Player A"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:gravity="center"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_question"
