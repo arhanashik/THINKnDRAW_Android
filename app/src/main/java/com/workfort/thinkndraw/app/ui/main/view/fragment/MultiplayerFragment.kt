@@ -227,7 +227,6 @@ class MultiplayerFragment: Fragment() {
                 AlertDialog.Builder(context!!)
                     .setTitle("Result")
                     .setMessage(finalResult)
-                    .setCancelable(false)
                     .setPositiveButton("Go to home") { _, _ ->
                         mMultiplayerViewModel.clearData()
                         findNavController().navigate(
